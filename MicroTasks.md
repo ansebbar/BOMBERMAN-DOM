@@ -1,184 +1,392 @@
+# 💣 Bomberman DOM – Microtasks & Implementation Plan
 
-🔹 1. Setup & Initialization
-Task 1.1: Initialize the Project
-✅ What: Create folder structure as shown above
-✅ Why: Organizes client/server/shared logic
-✅ How: Use mkdir and create placeholder files
+This file contains detailed microtasks for building a multiplayer Bomberman game using DOM (no canvas), Node.js, and WebSockets. Follow this structured list to build confidently in 3 days.
 
-Task 1.2: Install Required Dependencies
-✅ What: Install Express and ws for WebSocket
-✅ Why: Used for HTTP server and real-time sync
-✅ How: npm init -y && npm install express ws
+---
 
-Task 1.3: Serve Static Files
-✅ What: Serve index.html and client JS via Express
-✅ Why: Allows the frontend to load on localhost
-✅ How: Express app.use(express.static('client'))
+## 📁 1. Setup & Initialization
 
-🔹 2. Game Map System
-Task 2.1: Map Initialization
-✅ What: Generate 2D grid with:
+### ✅ Task 1.1: Initialize Project Structure
+- **What:** Create folder structure
+- **Why:** Clean separation of concerns
+- **How:**
+  - `/client`: frontend HTML/CSS/JS
+  - `/server`: Node.js + WebSocket backend
+  - `/shared`: shared constants or types
 
-indestructible walls
+### ✅ Task 1.2: Install Dependencies
+- **What:** Install backend tools
+- **Why:** Required for server + socket communication
+- **How:**
+  ```bash
+  npm init -y
+  npm install express ws
+✅ Task 1.3: Setup Express Static Server
+What: Serve client files
 
-destructible blocks
+Why: Enables game in browser
 
-free ground tiles
-✅ Why: Forms the game field
-✅ How: Use nested arrays with numeric tile values
+How:
 
-Task 2.2: Spawn Zones
-✅ What: Ensure corners are clear for player spawning
-✅ Why: Players should not start stuck
-✅ How: Avoid placing blocks near (0,0), (mapWidth,mapHeight), etc.
+In server.js:
 
-Task 2.3: Map API
-✅ What: Write methods:
+js
+Copy
+Edit
+const express = require('express');
+const app = express();
+app.use(express.static('client'));
+🧱 2. Game Map System
+✅ Task 2.1: Map Grid Generation
+What: Create 2D grid for the map
 
+Why: Core world structure
+
+How:
+
+Use 2D array
+
+Tiles: 0 = wall, 1 = block, 2 = ground, 'p' = power-up
+
+✅ Task 2.2: Random Block Placement
+What: Add breakable blocks randomly
+
+Why: Gameplay variability
+
+How:
+
+Add random 1 blocks with probability
+
+Keep spawn areas clear
+
+✅ Task 2.3: Safe Spawn Zones
+What: Leave spawn areas open
+
+Why: Prevent unfair starts
+
+How:
+
+Clear at least 3x3 space at each corner
+
+✅ Task 2.4: Map Utility Functions
+What: Add helper methods
+
+Why: Needed by player & explosion logic
+
+How:
+
+js
+Copy
+Edit
 isWalkable(x, y)
-
 destroyBlock(x, y)
-
 placePowerUp(x, y)
-✅ Why: Used by movement, bomb and explosion logic
-✅ How: Use value checks inside the 2D grid
+🧍‍♂️ 3. Player System
+✅ Task 3.1: Player Class / Object
+What: Represents a player
 
-🔹 3. Player Logic
-Task 3.1: Player Entity
-✅ What: Define properties:
+Why: Track position, lives, stats
 
-ID
+Props:
 
-position
+id, position, lives, stats
 
-stats (bombs, range, speed)
+stats: { speed, bombCount, range }
 
-lives
-✅ Why: Tracks each player's state
-✅ How: Use a class or object template
+✅ Task 3.2: Movement Logic
+What: Allow directional movement
 
-Task 3.2: Movement Logic
-✅ What: Check movement validity using Map.isWalkable()
-✅ Why: Prevents walking into walls
-✅ How: Validate next tile before updating position
+Why: Core input mechanic
 
-Task 3.3: Player PowerUps
-✅ What: Collect power-ups when standing on one
-✅ Why: Updates stats (bomb count, range, speed)
-✅ How: Check map tile at player position on move
+How:
 
-🔹 4. Bomb and Explosion Logic
-Task 4.1: Bomb Entity
-✅ What: Create bombs with:
+On input: check isWalkable(x, y)
 
-ownerId
+Update player.position
 
-position
+✅ Task 3.3: Bomb Placement
+What: Lay bomb on spacebar
 
-timer (2s)
-✅ Why: Stores pending explosions
-✅ How: Add bombs to GameState, then explode on timeout
+Why: Main action
 
-Task 4.2: Explosion Mechanics
-✅ What: When timer ends, explode in 4 directions
-✅ Why: Damages players, destroys blocks
-✅ How: Use for loops in all 4 directions, respect bomb range and walls
+How:
 
-Task 4.3: Chain Reactions
-✅ What: If another bomb is in range, trigger it
-✅ Why: Supports classic Bomberman chain effect
-✅ How: Recursively call explosion for affected bombs
+Check current bomb count
 
-Task 4.4: Block Destruction
-✅ What: If explosion hits destructible block → destroy it
-✅ Why: Opens new paths, reveals power-ups
-✅ How: Map.destroyBlock(x, y)
+Add bomb to GameState.bombs[]
 
-🔹 5. Power-Ups
-Task 5.1: Power-Up Spawning
-✅ What: After a block is destroyed, chance to spawn power-up
-✅ Why: Adds game progression
-✅ How: Use random chance (e.g., 30%) after block destruction
+✅ Task 3.4: Power-Up Pickup
+What: Player steps on power-up
 
-Task 5.2: Power-Up Collection
-✅ What: Player collects power-up when stepping on it
-✅ Why: Buffs player stats
-✅ How: Check tile type and apply effect
+Why: Buffs player
 
-🔹 6. Game State + Server Tick
-Task 6.1: GameState Container
-✅ What: Create object to hold:
+How:
 
-players
+On move, check tile
 
-bombs
+If 'p', apply stat and clear tile
 
-map
+💣 4. Bombs & Explosions
+✅ Task 4.1: Bomb Entity
+What: Represent a bomb
 
-power-ups
-✅ Why: Single source of truth
-✅ How: Use a class or singleton module
+Props: position, range, ownerId, timer
 
-Task 6.2: Game Loop (tick())
-✅ What: Run logic every 30ms
-✅ Why: Updates game consistently
-✅ How: Use setInterval or setTimeout
+How:
 
-Task 6.3: Snapshot Sync
-✅ What: Every tick, send full snapshot to all clients
-✅ Why: Keeps game in sync across clients
-✅ How: Serialize GameState into plain object and emit via WebSocket
+Start timer when placed
 
-🔹 7. Frontend Game Client
-Task 7.1: DOM Grid Renderer
-✅ What: Render 2D grid as HTML elements
-✅ Why: Visual representation of map
-✅ How: Use <div> elements in CSS grid
+Trigger explosion after 2s
 
-Task 7.2: Player/Bomb Rendering
-✅ What: Render player positions and bombs
-✅ Why: Visual feedback
-✅ How: Update classList or use data attributes for CSS styling
+✅ Task 4.2: Explosion System
+What: Destroy blocks, damage players, chain bombs
 
-Task 7.3: DOM Optimization
-✅ What: Avoid full DOM re-renders
-✅ Why: Maintain 60FPS
-✅ How: Compare old vs new state and update only changes
+How:
 
-Task 7.4: Input Handler
-✅ What: Capture arrow keys and spacebar
-✅ Why: Trigger movement and bombs
-✅ How: Add keydown listeners and emit actions to server
+Propagate in 4 directions until wall or limit
 
-🔹 8. Chat System (Optional)
-Task 8.1: Chat UI
-✅ What: Create input + chat log
-✅ Why: Simple communication
-✅ How: Basic DOM elements with scrollable div
+If another bomb hit → explode it
 
-Task 8.2: Chat Sync
-✅ What: Send chat messages via socket
-✅ Why: Sync across players
-✅ How: socket.emit('chat', msg), server broadcasts
+Damage players within range
 
-🔹 9. Game Phases & Victory
-Task 9.1: Game Phases
-✅ What: Phases: waiting, countdown, running, ended
-✅ Why: Organizes game flow
-✅ How: Track phase in GameState
+✅ Task 4.3: Destroy Blocks + Power-Ups
+What: Block → destroyed → maybe drops power-up
 
-Task 9.2: Countdown to Start
-✅ What: When 2+ players join, start countdown
-✅ Why: Wait for enough players
-✅ How: Use setTimeout to start game
+Why: Progression + reward
 
-Task 9.3: Victory Condition
-✅ What: Last player alive wins
-✅ Why: End the game fairly
-✅ How: Check if only 1 player has lives > 0
+How:
 
-Task 9.4: Show Winner
-✅ What: Display winner screen on client
-✅ Why: Wraps up match
-✅ How: Server sends final snapshot with phase: "ended" and winner info
+On destruction: 20–30% chance for 'p' tile
+
+Add to map
+
+✅ Task 4.4: Player Damage & Death
+What: Reduce lives if hit
+
+Why: Enable win condition
+
+How:
+
+If explosion hits player → lives--
+
+If lives <= 0 → remove player
+
+🧠 5. Game State Management (Server)
+✅ Task 5.1: GameState Class
+Props:
+
+players[], map, bombs[], phase
+
+How:
+
+addPlayer(), removePlayer()
+
+handleInput(id, input)
+
+tick() → main loop
+
+✅ Task 5.2: Game Loop (tick())
+What: 30ms interval game updates
+
+Why: Drive game logic
+
+How:
+
+js
+Copy
+Edit
+setInterval(() => gameState.tick(), 30);
+✅ Task 5.3: Game Snapshot
+What: Emit snapshot of game state
+
+Why: Sync all players
+
+How:
+
+Collect all map, players, bombs
+
+Send via socket.send("gameSnapshot", data)
+
+🌐 6. WebSocket Communication
+✅ Task 6.1: Connect + Join
+What: Handle new player connections
+
+Why: Entry point to game
+
+How:
+
+Ask for nickname
+
+Assign corner spawn and ID
+
+✅ Task 6.2: Input Events
+What: Handle:
+
+move, layBomb, chat
+
+Why: Translate UI actions into game logic
+
+How:
+
+On input → socket.emit("move", {dir})
+
+Server: validate and update player.position
+
+✅ Task 6.3: Game Phases
+What: "waiting" → "running" → "ended"
+
+Why: Show countdowns, handle restarts
+
+How:
+
+Start when 2–4 players join or timer runs out
+
+🎮 7. Frontend – Rendering & State
+✅ Task 7.1: useState Hook
+What: Build/use custom useState
+
+Why: DOM reactivity
+
+State to manage:
+
+gameState, localPlayer, chatLog
+
+✅ Task 7.2: DOM Renderer
+What: Draw tiles, players, bombs
+
+Why: Visual feedback
+
+How:
+
+Use div for each tile
+
+Position players with style.left/top
+
+✅ Task 7.3: requestAnimationFrame Loop
+What: Run every frame
+
+Why: Smooth updates
+
+How:
+
+js
+Copy
+Edit
+function gameLoop() {
+  updateDOM();
+  requestAnimationFrame(gameLoop);
+}
+✅ Task 7.4: DOM Diffing
+What: Only update changed elements
+
+Why: Performance
+
+How:
+
+Compare previous and current state
+
+Update styles (not innerHTML)
+
+🎮 8. Input Handling
+✅ Task 8.1: Keyboard Controls
+What: Arrow keys = move, Space = bomb
+
+How:
+
+Capture keydown
+
+Send to server via WebSocket
+
+✅ Task 8.2: Local Prediction
+What: Move instantly on client
+
+Why: Reduce input lag
+
+How:
+
+Optimistically move player
+
+Overwrite from server snapshot
+
+💬 9. Chat System
+✅ Task 9.1: UI
+What: Input + chat display
+
+How:
+
+Input field → submit on enter
+
+Display messages in a scroll box
+
+✅ Task 9.2: WebSocket Events
+What: chat → send and receive
+
+How:
+
+socket.emit("chat", {text})
+
+Append to chatLog on client
+
+🏁 10. Endgame Logic
+✅ Task 10.1: Victory Detection
+What: Game ends when 1 player remains
+
+How:
+
+If alivePlayers.length === 1 → winner
+
+✅ Task 10.2: Display Winner
+What: Show winner UI
+
+How:
+
+Overlay screen with Player X wins!
+
+✅ Task 10.3: Reset Game
+Optional
+
+What: Allow restart or refresh
+
+How:
+
+Reset GameState
+
+Reload frontend or emit startNewGame
+
+🧪 11. Testing & Optimization
+✅ Task 11.1: Manual Gameplay Test
+Checklist:
+
+Players can move
+
+Bombs explode correctly
+
+Deaths and power-ups trigger
+
+✅ Task 11.2: Performance Test
+What: Optimize large maps or 4 players
+
+How:
+
+Profile DOM update loop
+
+Debounce rerenders
+
+✅ Task 11.3: Code Cleanup
+Checklist:
+
+Remove logs
+
+Use constants
+
+Split files if needed
+
+📌 Final Notes
+Use DOM-based visuals (div per tile)
+
+Avoid canvas or external rendering libraries
+
+Target: 2–4 players per game
+
+Focus on smooth updates and responsiveness
 
