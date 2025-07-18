@@ -36,9 +36,7 @@ Supports 2–4 players. Built for performance (60FPS+), real-time interaction, a
 
 ## 🧱 Class Diagram (Text Format)
 
-markdown
-Copy
-Edit
+
     ┌────────────┐
     │ GameState  │
     └────────────┘

@@ -5,25 +5,52 @@ const path = require('path');
 const GameHandle = require("./Gamestate.js")
 const player = require("./Player.js")
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/') {
-    const filePath = path.join(__dirname, '../client/index.html');
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        res.writeHead(500);
-        res.end('Internal Error');
-      } else {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-      }
-    });
-  } else {
-    res.writeHead(404);
-    res.end('Not Found');
-  }
-});
+  // const Public__Dir = path.join(__dirname, '..client')
+// function readAllfiles(path){
 
-const wss = new WebSocket.Server({ server });
+//   fs.readdir(Public__Dir, {} ,(err, data) => {
+//     if (err) {
+//       console.log("error:", err);
+//     }else{
+//       data.forEach(fl=>{
+// zzz
+        
+//       })
+//     }
+   
+//   })
+// }
+// const server = http.createServer((req, res) => {
+
+
+
+
+  // const ext = path.extname(req.url)
+  // const mimeType = {
+  //   ".js":"application/javascript",
+  //   ".css":"text/css" ,
+  //   ".html":"text/html",
+  // }
+
+  // const filePath = path.join(__dirname, '../client');
+  // if (req.url === './') {
+  //   filePath = path.join(__dirname, '../client/index.html')
+  // }
+  // console.log(filePath);
+
+  //   fs.readFile(filePath, (err, data) => {
+  //     if (err) {
+  //       res.writeHead(500);
+  //       res.end('Internal Error');
+  //     } else {
+  //       res.writeHead(200, { 'Content-Type': ext[mimeType] });
+  //       res.end(data);
+  //     }
+  //   });
+
+// });
+
+const wss = new WebSocket.Server({ port:8080 });
 
 wss.on('connection', function connection(ws) {
   console.log(' Client connected');
@@ -40,6 +67,6 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-server.listen(8080, () => {
-  console.log(' Server running at http://localhost:8080');
-});
+// server.listen(8080, () => {
+//   console.log(' Server running at http://localhost:8080');
+// });

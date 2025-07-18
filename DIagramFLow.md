@@ -1,76 +1,44 @@
-## 🧩 Entity Design
 
-### GameState
-- `players[]`: Active players
-- `bombs[]`: Active bombs
-- `map`: 2D grid map (static walls, destructible blocks, ground)
-- `phase`: `"waiting" | "running" | "ended"`
-- `tick()`: Game loop logic
-- `sendSnapshot()`: Push full game state to all clients
+## 🕹 Frontend Tasks
 
-### Player
-- `id`, `position`, `stats`, `lives`
-- `move(dir)`: Tries to move player
-- `layBomb()`: Places a bomb if allowed
+### 🔹 State Management
+- [ ] `useState()` → manage:
+  - `gameState`
+  - `localPlayer`
+  - `map`
+  - `chatLog`
+- [ ] `setGameState(snapshot)` from server tick
 
-### Bomb
-- `position`, `range`, `ownerId`
-- Explodes after 2s
-- On explosion → calls `Explosion`
+### 🔹 Game Loop
+- [ ] `requestAnimationFrame` loop
+- [ ] Update player positions
+- [ ] Render bombs + explosions
+- [ ] Only update changed DOM nodes
 
-### Explosion
-- Propagates in 4 directions
-- Destroys blocks
-- Hurts players
-- Triggers chain bombs
+### 🔹 Input Handler
+- [ ] Arrow keys → send `move` signal
+- [ ] Spacebar → send `layBomb` signal
 
-### PowerUp
-- Spawns from destroyed blocks
-- Types: `bomb`, `flame`, `speed`
+### 🔹 DOM Renderer
+- [ ] Grid renderer (wall, block, ground, power-up)
+- [ ] Dynamic rendering for players and bombs
+- [ ] Reuse divs when possible for performance
 
-### Map
-- 2D grid: wall = 0, block = 1, ground = 2, power-up = "p"
-- Utilities:
-  - `isWalkable(x, y)`
-  - `destroyBlock(x, y)`
-  - `placePowerUp(x, y)`
+### 🔹 Chat UI
+- [ ] Input field + submit button
+- [ ] Display message list
+- [ ] Socket: send + receive messages
 
 ---
 
-## ✅ Microtask Tracker
+## 🔁 Game Flow Logic
 
-### 🔹 Setup & Project Structure
-- [ ] Setup project folders: `client`, `server`, `shared`
-- [ ] Install WebSocket and Express
-- [ ] Setup basic MiniFramework on client
-
-### 🔹 GameState (server)
-- [ ] `players[]`: join/leave logic
-- [ ] `map`: create map with walls + random blocks
-- [ ] `bombs[]`: track active bombs
-- [ ] `phase`: track game state
-- [ ] `tick()`: run logic every 30ms
-- [ ] `sendSnapshot()`: emit to clients
-
-### 🔹 Map (server)
-- [ ] Init 2D grid
-- [ ] Place static walls (0)
-- [ ] Random blocks (1)
-- [ ] Ensure safe spawn zones
-- [ ] Methods: `isWalkable`, `destroyBlock`, `placePowerUp`
-
-### 🔹 Player (server)
-- [ ] Properties: `id`, `position`, `stats`, `lives`
-- [ ] Method: `move()`: handles collision
-- [ ] Method: `layBomb()`: limited by stats
-
-### 🔹 Bomb & Explosion
-- [ ] Create `Bomb` with `ownerId`, `range`
-- [ ] Set 2s timer → triggers explosion
-- [ ] Explosion propagates in 4 directions
-- [ ] Affects players, blocks, power-ups
-
-### 🔹 PowerUps
-- [ ] Chance to spawn when a block is destroyed
-- [ ] Types: bomb count, flame range, speed
-- [ ] Collected on player step
+1. On client connect → enter nickname
+2. Server adds player → sends to waiting room
+3. When 2–4 players connected → start 20s countdown
+4. If 4 players before 20s → skip to 10s "get ready"
+5. Game starts → map + player snapshot sent
+6. Players move, lay bombs
+7. Game tick runs every 30ms → calculates game logic
+8. Server sends updated gameSnapshot
+9. Game ends when 1 player remains → winner screen
