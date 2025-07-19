@@ -7,38 +7,44 @@
   position: relative;
 }
 
-
-
-.Map_container > div{
-    width: 100%;
-    /* position: center; */
-    height: 100%;
-    gap: 0%;
-    padding: 0%;
-    margin: 0%;
+.Map_container > div {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
-
 
 .tile {
   width: 60px;
   height: 60px;
-  background-image: url('map.png'); /* Replace with your actual path */
-  background-size: 128px auto; /* Resized to match scaling if necessary */
+  background-image: url('map.png'); /* Sprite sheet path */
+  background-size: 256px auto; /* Adjust to full sprite sheet width */
   background-repeat: no-repeat;
   image-rendering: pixelated;
 }
 
-/* WALL: Using rocky texture */
-.WALL {
-  background-position: -64px 0; /* rock-purple */
-}
+/* === WALL Tiles === */
+.WALL-tech { background-position: -0px -0px; }         /* tile(0,0): tech wall */
+.WALL-purple-rock { background-position: -80px -0px; } /* tile(0,5): purple cliff */
+.WALL-ice { background-position: -64px -48px; }        /* tile(3,4): icy wall */
+.WALL-cliff { background-position: -128px -16px; }     /* tile(1,8): dark cliff */
+.WALL-mech { background-position: -128px -96px; }      /* tile(6,8): mech skeleton */
 
-/* BLOCK: Using metal door frame */
-.BLOCK {
-  background-position: -16px 0; /* door-frame or red metal block */
-}
+/* === BLOCK Tiles (destructible) === */
+.BLOCK-metal { background-position: -16px -0px; }      /* tile(0,1): metal door */
+.BLOCK-terminal { background-position: -64px -0px; }   /* tile(0,4): tech terminal */
+.BLOCK-snow-rock { background-position: -80px -48px; } /* tile(3,5): snow block */
+.BLOCK-mech-head { background-position: -160px -96px; }/* tile(6,10): mech decor */
 
-/* EMPTY: Transparent space, maybe faint snow texture or leave blank */
-.EMPTY {
-  background: none;
-}
+/* === EMPTY / WALKABLE Tiles === */
+.EMPTY-snow { background-position: -0px -48px; }       /* tile(3,0): snow floor */
+.EMPTY-base { background-position: -32px -0px; }       /* tile(0,2): clean tech floor */
+.EMPTY-dark { background-position: -144px -16px; }     /* tile(1,9): dark cave floor */
+.EMPTY { background: none; }                           /* Transparent fallback */
+
+/* === DECORATION Tiles (can go on EMPTY or WALL tiles) === */
+.DECOR-tree-1 { background-position: -32px -48px; }    /* tile(3,2): snow tree */
+.DECOR-tree-2 { background-position: -48px -48px; }    /* tile(3,3): alt tree */
+.DECOR-mech-leg { background-position: -144px -96px; } /* tile(6,9): mech leg */
+.DECOR-mech-track { background-position: -176px -96px; } /* tile(6,11): tank treads */
+.DECOR-tech-door { background-position: -48px -0px; }  /* tile(0,3): tech door frame */

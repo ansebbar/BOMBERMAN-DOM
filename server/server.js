@@ -81,6 +81,8 @@ class Socket {
           case "NewUser":
             const pl = new Player(data.name)
             this.gameHandler.addplayer(pl)
+            console.log(this.gameHandler.players);
+            
 
             break;
           case "Map":
@@ -88,6 +90,7 @@ class Socket {
               console.log("maaap", map);
               this.SendData(JSON.stringify({signal:"Map" , data:map}))
               
+          
           default:
             break;
         }
