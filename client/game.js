@@ -5,20 +5,31 @@
 //     requestAnimationFrame(GameLoop)
 // }
 
-        const ws = new WebSocket('ws://localhost:8080');
+import {LogPage} from "./dom.js"
 
 
-        ws.onopen = () => {
-            // ws.send("heelo back")
-        }
-
-        ws.onmessage = (e) => {
-            console.log("recieved msg : ", e.data);
+const ws = new WebSocket('ws://127.0.0.1:5500');
 
 
-        }
+ws.onopen = () => {
+    // ws.send("heelo back")
+    console.log("opeeeen");
+  const ll =   LogPage()
+  console.log("lllllllll" , ll);
+  
+    
+}
 
-        ws.onclose = (e) => {
-            console.log("recieved msg : ", e.data);
+ws.onmessage = (e) => {
+    console.log("recieved msg : ", e.data);
+    
+    
+}
 
-        }
+ws.onclose = (e) => {
+        console.log("clooose");
+
+    console.log("recieved msg : ", e.data);
+    
+}
+window.ws = ws

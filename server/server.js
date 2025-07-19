@@ -3,7 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const GameHandle = require("./Gamestate.js")
-const player = require("./Player.js")
+const Player = require("./Player.js")
 
   // const Public__Dir = path.join(__dirname, '..client')
 // function readAllfiles(path){
@@ -50,15 +50,29 @@ const player = require("./Player.js")
 
 // });
 
-const wss = new WebSocket.Server({ port:8080 });
+
+
+const wss = new WebSocket.Server({ port:5500 });
 
 wss.on('connection', function connection(ws) {
   console.log(' Client connected');
 
   const gameHandler = new GameHandle(ws)
   ws.on('message', function incoming(message) {
-    console.log(' Received:', message.toString());
 
+    switch (message.toString()) {
+      case "NewPlayer":
+        //On NewPLayer
+        const pl = new Player(message.toString())
+        gameHandler.addplayer(pl)
+        console.log("PLLL" , pl);
+        break;
+    
+      default:
+        break;
+    }
+    
+    console.log(' Received:', message.toString());    
     ws.send(`You said: ${message}`);
   });
 
