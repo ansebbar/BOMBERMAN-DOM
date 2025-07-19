@@ -7,9 +7,7 @@ const { log } = require("node:console")
         this.activeBombs = []
         this.map = null
         this.phase = "waiting"
-        this.tick()
-        console.log('creeeeeeeted');
-        
+        this.tick()        
     }
 
     addplayer(player){
@@ -24,8 +22,8 @@ const { log } = require("node:console")
     }
 
     takeSnapshot(){
-    const data = this.phase === 'waiting' ? 'waiting' : "dataat"
-    this.ws.send(data)
+    const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
+    this.ws.SendData(JSON.stringify(data))
     }
     tick(){
         setInterval(() => {
