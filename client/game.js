@@ -5,24 +5,23 @@
 //     requestAnimationFrame(GameLoop)
 // }
 
-import { LogPage, Map } from "./dom.js"
+import { LogPage, Map, Player } from "./dom.js"
+import { useState , Component} from "./MiniFramework/app/state.js"
 
 
 const ws = new WebSocket('ws://127.0.0.1:5500');
 
+var player = {}
 
 ws.onopen = () => {
     // ws.send("heelo back")
-    console.log("opeeeen");
     const ll = LogPage()
-    console.log("lllllllll", ll);
 
 
 }
 
 ws.onmessage = (e) => {
-    // console.log("recieved msg : ", e.data);
-    // console.log("dt", JSON.parse(e.data));
+
     var data
     if (e.data) data = JSON.parse(e.data)
         console.log(data , "dddddd");
@@ -32,6 +31,15 @@ ws.onmessage = (e) => {
         const map = Map(data.data)
         console.log("mpp", map);
     }
+    if (data.signal == "Player") {
+
+        const player = Player(data.data)
+
+    }
+    if (data.signal == "Snap"){
+        setGameState(data.data)
+    }
+
 
 
 }
@@ -43,3 +51,13 @@ ws.onclose = (e) => {
 
 }
 window.ws = ws
+
+
+function GameLoop(){
+        console.log("updateheeeeeeeeeeeeeeeeeeeeeeeeeeeeere" , gameState);
+        updateDom(gameState)
+        requestAnimationFrame(GameLoop)
+
+}
+
+GameLoop()

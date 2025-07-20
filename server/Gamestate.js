@@ -22,8 +22,10 @@ const { log } = require("node:console")
     }
 
     takeSnapshot(){
-    const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
-    this.ws.SendData(JSON.stringify(data))
+
+        const snapShot = {players : this.players , phase:this.phase , bombs:this.activeBombs }
+    // const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
+    this.ws.SendData(JSON.stringify(snapShot))
     }
     tick(){
         setInterval(() => {

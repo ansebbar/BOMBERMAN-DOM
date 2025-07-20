@@ -1,27 +1,47 @@
+/* Base Sprite Style */
+.tile {
+  width: 16px;
+  height: 16px;
+  background-image: url('map.png'); /* Replace with actual path */
+  background-repeat: no-repeat;
+  display: inline-block;
+  transform: scale(3.75); /* 16px * 3.75 ≈ 60px */
+  transform-origin: top left;
+  image-rendering: pixelated;
+}
+
+/* Container Grid (13x13 scaled tiles) */
 .Map_container {
   display: grid;
   grid-template-rows: repeat(13, 60px);
   grid-template-columns: repeat(13, 60px);
-  background-color: #ffffff;
-  margin: 0 auto;
-  position: relative;
+  background-color: #000;
+  width: fit-content;
+  margin: 50px auto;
+  gap: 0;
 }
 
-.Map_container > div {
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
+body{
+  background-color: rgb(0, 0, 0);
 }
 
-.tile {
-  width: 60px;
-  height: 60px;
-  background-image: url('map.png'); /* Sprite sheet path */
-  background-size: 256px auto; /* Adjust to full sprite sheet width */
-  background-repeat: no-repeat;
-  image-rendering: pixelated;
-}
+.panel-yellow      { background-position: 0    0; }
+.door-frame        { background-position: -16px 0; }
+.ladder-top        { background-position: -32px 0; }
+.ladder-middle     { background-position: -48px 0; }
+.rock-purple       { background-position: -64px 0; }
+.rock-blue         { background-position: -80px 0; }
+.stone-wall-top    { background-position: -96px 0; }
+.snow-tree         { background-position: 0   -64px; }
+.snow-ground       { background-position: -16px -64px; }
+.ice-rock          { background-position: -32px -64px; }
+.cave-dark         { background-position: -64px -32px; }
+.cliff-edge        { background-position: -80px -32px; }
+.mech-leg-joint    { background-position: 0   -160px; }
+.mech-leg-bottom   { background-position: -16px -160px; }
+.mech-head         { background-position: -32px -160px; }
+.mech-body         { background-position: -48px -160px; }
+.exit-door-top     { background-position: -112px 0; }
 
 /* === WALL Tiles === */
 .WALL-tech { background-position: -0px -0px; }         /* tile(0,0): tech wall */
@@ -48,3 +68,25 @@
 .DECOR-mech-leg { background-position: -144px -96px; } /* tile(6,9): mech leg */
 .DECOR-mech-track { background-position: -176px -96px; } /* tile(6,11): tank treads */
 .DECOR-tech-door { background-position: -48px -0px; }  /* tile(0,3): tech door frame */
+
+
+.tiledecor {
+  width: 100%;
+  height: 100%;
+  transform: scale(1.44);
+  background-image: url('map.png'); /* Replace with actual path */
+  background-repeat: no-repeat;
+  display: inline-block;
+  image-rendering: pixelated;
+}
+
+
+/* Plaayer styling */
+
+.Player{
+  width: 50px;
+  height: 50px;
+    transform: scale(1.44);
+
+  background-color: rgb(255, 255, 255);
+}

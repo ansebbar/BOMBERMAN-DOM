@@ -5,8 +5,8 @@ const path = require('path');
 const GameHandle = require("./Gamestate.js")
 const Player = require("./Player.js")
 const Map = require("./map.js");
-const { log } = require('console');
-const { json } = require('stream/consumers');
+// const { log } = require('console');
+// const { json } = require('stream/consumers');
 
 // const Public__Dir = path.join(__dirname, '..client')
 // function readAllfiles(path){
@@ -73,26 +73,27 @@ class Socket {
       this.ws = ws
       this.gameHandler = new GameHandle(this)
 
-  
+
       this.ws.on("message", (message) => {
         const data = JSON.parse(message)
-        
+
         switch (data.signal) {
           case "NewUser":
             const pl = new Player(data.name)
             this.gameHandler.addplayer(pl)
             console.log(this.gameHandler.players);
-            
+
 
             break;
           case "Map":
-              const map = new Map()
-              console.log("maaap", map);
-              this.SendData(JSON.stringify({signal:"Map" , data:map}))
-              
-          
-          default:
-            break;
+            const map = new Map()
+            console.log("maaap", map);
+            this.SendData(JSON.stringify({ signal: "Map", data: map }))
+
+          case "PlayerMovement":
+            console.log(JSON.parse(message));
+            
+   
         }
       })
 
