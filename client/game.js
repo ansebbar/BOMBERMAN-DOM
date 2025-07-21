@@ -5,13 +5,32 @@
 //     requestAnimationFrame(GameLoop)
 // }
 
-import { LogPage, Map, Player , GameHandler , Game } from "./dom.js"
-import { useState , Component} from "./MiniFramework/app/state.js"
+import { LogPage, Map, Player } from "./dom.js"
+import { useState, Component } from "./MiniFramework/app/state.js"
+import { createElement } from './MiniFramework/app/dom.js';
 
 
 const ws = new WebSocket('ws://127.0.0.1:5500');
+var root = document.querySelector("#root")
 
-var player = {}
+  var GameHandler 
+ const Game = new Component("div", root, () => {
+
+    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
+
+    if (!GameHandler) GameHandler = setGameState
+            console.log(gameState() , "staaaaaaaaaaaate");
+
+    return (
+
+        
+        createElement("div", { class: "gameContainer" },
+            gameState().players.length > 0 &&
+            createElement("div", { class: "Player" , style:`top:${gameState().players[0].position.y+1 * 16}px ; left:${gameState().players[0].position.x+1 * 16}px` } , "pl1")
+        )
+
+    )
+})
 
 ws.onopen = () => {
     // ws.send("heelo back")
@@ -24,8 +43,8 @@ ws.onmessage = (e) => {
 
     var data
     if (e.data) data = JSON.parse(e.data)
-        console.log(data , "dddddd");
-        
+    console.log(data, "dddddd");
+
     if (data.signal == "Map") {
 
         const map = Map(data.data)
@@ -36,7 +55,9 @@ ws.onmessage = (e) => {
         const player = Player(data.data)
 
     }
-    if (data.signal == "Snap"){
+    if (data.signal == "Snap") {
+        console.log("snaaaaaaaaaaap");
+        
         GameHandler(data.data)
     }
 
@@ -53,10 +74,17 @@ ws.onclose = (e) => {
 window.ws = ws
 
 
-function GameLoop(){
-Game()
-requestAnimationFrame(GameLoop)
 
-}
 
-GameLoop()
+
+
+// function GameLoop() {   
+   
+//     requestAnimationFrame(GameLoop)
+
+// }
+
+// GameLoop()
+
+
+

@@ -74,24 +74,8 @@ eventManager.addevent("keydown", (e) => {
 //         break;
 
 //     default:
-//         break;
+//         break; 
 //    }
 
 // }
-
- export var GameHandler 
-export const Game = new Component("div", root, () => {
-
-    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
-    if (!GameHandler) GameHandler = setGameState
-    return (
-
-        createElement("div", { class: "gameContainer" },
-
-            gameState().players.length > 0 &&
-            createElement("div", { class: "Player" , style:`left:${gameState().players[0].x * 16}px`} , "pl1")
-        )
-
-    )
-})
 

@@ -91,6 +91,16 @@ class Socket {
             this.SendData(JSON.stringify({ signal: "Map", data: map }))
 
           case "PlayerMovement":
+
+              const dd = JSON.parse(message).Direction
+              switch (dd) {
+                case "Up" || "Down":
+                    this.gameHandler.players[0].position.y = this.gameHandler.players[0].position.y+1 
+                  break;
+              
+                default:
+                  break;
+              } 
             console.log(JSON.parse(message));
             
    
