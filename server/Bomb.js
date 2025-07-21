@@ -3,9 +3,13 @@ class Bomb{
         this.position = position
         this.ownerId = ownerId
         this.range = range
+        this.timer = 2000
+        this.Explostion()
     }
 
     Explostion(){
-        setTimeout(()=>{"exploded"} , 2000)
+        setTimeout(()=>{"exploded"} , this.timer)
     }
 }
+
+module.exports = Bomb

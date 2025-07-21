@@ -81,24 +81,34 @@ class Socket {
           case "NewUser":
             console.log(this.gameHandler.players);
             this.gameHandler.map = new Map()
-            const pl = new Player(data.name , this.gameHandler.map)
+            const pl = new Player(data.name, this.gameHandler.map)
             this.gameHandler.addplayer(pl)
 
 
             break;
           case "Map":
-            // const map = new Map()
-            // console.log("maaap", map);
-            // this.SendData(JSON.stringify({ signal: "Map", data: map }))
+          // const map = new Map()
+          // console.log("maaap", map);
+          // this.SendData(JSON.stringify({ signal: "Map", data: map }))
 
           case "PlayerMovement":
 
             const Direction = JSON.parse(message).Direction
-          this.gameHandler.players[0].move(Direction)
+            this.gameHandler.players[0].move(Direction)
             console.log(JSON.parse(message));
+          case "Bomb":
+            if (this.gameHandler.activeBombs.filter(UserBmb => this.gameHandler.players[0].id == UserBmb.ownerId).length <= this.gameHandler.players[0].stats.bCount)
+{            const bmb = this.gameHandler.players[0].layBomb()
+  this.gameHandler.activeBombs.push(bmb)
+}            //need to optimize later
+            setTimeout(() => {
+              this.gameHandler.activeBombs.filter(UserBmb => this.gameHandler.players[0].id !== UserBmb.ownerId)
+            }, 2000);
 
 
         }
+
+
       })
 
 

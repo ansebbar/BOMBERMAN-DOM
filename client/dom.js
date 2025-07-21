@@ -56,7 +56,13 @@ export function Player(props) {
 
 eventManager.addevent("keydown", (e) => {
     if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "ArrowRight" || e.key === "ArrowLeft") ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) }))
+        e.key === "ArrowRight" || e.key === "ArrowLeft") ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) })
+    )
+
+    if (e.key === ' '){
+        console.log("booooooomb");
+        
+        ws.send(JSON.stringify({signal:"Bomb"}))}
 })
 
 

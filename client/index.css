@@ -2,10 +2,12 @@
 .tile {
   width: 16px;
   height: 16px;
-  background-image: url('map.png'); /* Replace with actual path */
+  background-image: url('map.png');
+  /* Replace with actual path */
   background-repeat: no-repeat;
   display: inline-block;
-  transform: scale(3.75); /* 16px * 3.75 ≈ 60px */
+  transform: scale(3.75);
+  /* 16px * 3.75 ≈ 60px */
   transform-origin: top left;
   image-rendering: pixelated;
 }
@@ -21,64 +23,188 @@
   gap: 0;
 }
 
-.gameContainer{
+.gameContainer {
   width: 500px;
   height: 500px;
 }
-body{
+
+body {
   background-color: rgb(0, 0, 0);
 }
 
-.panel-yellow      { background-position: 0    0; }
-.door-frame        { background-position: -16px 0; }
-.ladder-top        { background-position: -32px 0; }
-.ladder-middle     { background-position: -48px 0; }
-.rock-purple       { background-position: -64px 0; }
-.rock-blue         { background-position: -80px 0; }
-.stone-wall-top    { background-position: -96px 0; }
-.snow-tree         { background-position: 0   -64px; }
-.snow-ground       { background-position: -16px -64px; }
-.ice-rock          { background-position: -32px -64px; }
-.cave-dark         { background-position: -64px -32px; }
-.cliff-edge        { background-position: -80px -32px; }
-.mech-leg-joint    { background-position: 0   -160px; }
-.mech-leg-bottom   { background-position: -16px -160px; }
-.mech-head         { background-position: -32px -160px; }
-.mech-body         { background-position: -48px -160px; }
-.exit-door-top     { background-position: -112px 0; }
+.panel-yellow {
+  background-position: 0 0;
+}
+
+.door-frame {
+  background-position: -16px 0;
+}
+
+.ladder-top {
+  background-position: -32px 0;
+}
+
+.ladder-middle {
+  background-position: -48px 0;
+}
+
+.rock-purple {
+  background-position: -64px 0;
+}
+
+.rock-blue {
+  background-position: -80px 0;
+}
+
+.stone-wall-top {
+  background-position: -96px 0;
+}
+
+.snow-tree {
+  background-position: 0 -64px;
+}
+
+.snow-ground {
+  background-position: -16px -64px;
+}
+
+.ice-rock {
+  background-position: -32px -64px;
+}
+
+.cave-dark {
+  background-position: -64px -32px;
+}
+
+.cliff-edge {
+  background-position: -80px -32px;
+}
+
+.mech-leg-joint {
+  background-position: 0 -160px;
+}
+
+.mech-leg-bottom {
+  background-position: -16px -160px;
+}
+
+.mech-head {
+  background-position: -32px -160px;
+}
+
+.mech-body {
+  background-position: -48px -160px;
+}
+
+.exit-door-top {
+  background-position: -112px 0;
+}
 
 /* === WALL Tiles === */
-.WALL-tech { background-position: -0px -0px; }         /* tile(0,0): tech wall */
-.WALL-purple-rock { background-position: -80px -0px; } /* tile(0,5): purple cliff */
-.WALL-ice { background-position: -64px -48px; }        /* tile(3,4): icy wall */
-.WALL-cliff { background-position: -128px -16px; }     /* tile(1,8): dark cliff */
-.WALL-mech { background-position: -128px -96px; }      /* tile(6,8): mech skeleton */
+.WALL-tech {
+  background-position: -0px -0px;
+}
+
+/* tile(0,0): tech wall */
+.WALL-purple-rock {
+  background-position: -80px -0px;
+}
+
+/* tile(0,5): purple cliff */
+.WALL-ice {
+  background-position: -64px -48px;
+}
+
+/* tile(3,4): icy wall */
+.WALL-cliff {
+  background-position: -128px -16px;
+}
+
+/* tile(1,8): dark cliff */
+.WALL-mech {
+  background-position: -128px -96px;
+}
+
+/* tile(6,8): mech skeleton */
 
 /* === BLOCK Tiles (destructible) === */
-.BLOCK-metal { background-position: -16px -0px; }      /* tile(0,1): metal door */
-.BLOCK-terminal { background-position: -64px -0px; }   /* tile(0,4): tech terminal */
-.BLOCK-snow-rock { background-position: -80px -48px; } /* tile(3,5): snow block */
-.BLOCK-mech-head { background-position: -160px -96px; }/* tile(6,10): mech decor */
+.BLOCK-metal {
+  background-position: -16px -0px;
+}
+
+/* tile(0,1): metal door */
+.BLOCK-terminal {
+  background-position: -64px -0px;
+}
+
+/* tile(0,4): tech terminal */
+.BLOCK-snow-rock {
+  background-position: -80px -48px;
+}
+
+/* tile(3,5): snow block */
+.BLOCK-mech-head {
+  background-position: -160px -96px;
+}
+
+/* tile(6,10): mech decor */
 
 /* === EMPTY / WALKABLE Tiles === */
-.EMPTY-snow { background-position: -0px -48px; }       /* tile(3,0): snow floor */
-.EMPTY-base { background-position: -32px -0px; }       /* tile(0,2): clean tech floor */
-.EMPTY-dark { background-position: -144px -16px; }     /* tile(1,9): dark cave floor */
-.EMPTY { background: none; }                           /* Transparent fallback */
+.EMPTY-snow {
+  background-position: -0px -48px;
+}
+
+/* tile(3,0): snow floor */
+.EMPTY-base {
+  background-position: -32px -0px;
+}
+
+/* tile(0,2): clean tech floor */
+.EMPTY-dark {
+  background-position: -144px -16px;
+}
+
+/* tile(1,9): dark cave floor */
+.EMPTY {
+  background: none;
+}
+
+/* Transparent fallback */
 
 /* === DECORATION Tiles (can go on EMPTY or WALL tiles) === */
-.DECOR-tree-1 { background-position: -32px -48px; }    /* tile(3,2): snow tree */
-.DECOR-tree-2 { background-position: -48px -48px; }    /* tile(3,3): alt tree */
-.DECOR-mech-leg { background-position: -144px -96px; } /* tile(6,9): mech leg */
-.DECOR-mech-track { background-position: -176px -96px; } /* tile(6,11): tank treads */
-.DECOR-tech-door { background-position: -48px -0px; }  /* tile(0,3): tech door frame */
+.DECOR-tree-1 {
+  background-position: -32px -48px;
+}
+
+/* tile(3,2): snow tree */
+.DECOR-tree-2 {
+  background-position: -48px -48px;
+}
+
+/* tile(3,3): alt tree */
+.DECOR-mech-leg {
+  background-position: -144px -96px;
+}
+
+/* tile(6,9): mech leg */
+.DECOR-mech-track {
+  background-position: -176px -96px;
+}
+
+/* tile(6,11): tank treads */
+.DECOR-tech-door {
+  background-position: -48px -0px;
+}
+
+/* tile(0,3): tech door frame */
 
 
 .tiledecor {
   width: 100%;
   height: 100%;
   transform: scale(1.44);
-  background-image: url('map.png'); /* Replace with actual path */
+  background-image: url('map.png');
+  /* Replace with actual path */
   background-repeat: no-repeat;
   display: inline-block;
   image-rendering: pixelated;
@@ -87,12 +213,26 @@ body{
 
 /* Plaayer styling */
 
-.Player{
+.Player {
   width: 60px;
   height: 60px;
-  
-    position: absolute;
-    transition: transform 0.1s linear;    /* transform: scale(1.44); */
+
+  position: absolute;
+  transition: transform 0.1s linear;
+  /* transform: scale(1.44); */
   background-color: rgb(255, 255, 255);
   z-index: 10;
+}
+
+
+
+/* bomb */
+
+.bomb {
+
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  z-index: 9;
+
 }

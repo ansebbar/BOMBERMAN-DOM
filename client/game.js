@@ -52,6 +52,11 @@ var root = document.querySelector("#root")
         )
       ),
 
+      gameState().bombs.length > 0 && 
+      gameState().map(bmb =>
+        createElement("div" , {class:"bomb", style:`left:${bmb.position.x}px ; top:${bmb.position.y}px `}, "bomb")
+      ) 
+
 
   
 )
