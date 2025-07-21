@@ -79,7 +79,6 @@ class Socket {
 
         switch (data.signal) {
           case "NewUser":
-            console.log(this.gameHandler.players);
             this.gameHandler.map = new Map()
             const pl = new Player(data.name, this.gameHandler.map)
             this.gameHandler.addplayer(pl)
@@ -104,43 +103,51 @@ class Socket {
               const bmb = this.gameHandler.players[0].layBomb()
               this.gameHandler.activeBombs.push(bmb)
               setTimeout(() => {
-                console.log("removed", this.gameHandler.activeBombs);
+                // console.log("removed", this.gameHandler.activeBombs);
 
                 const Explode = (range) => {
                   let damaged = false
                   for (let i = 1; i <= range; i++) {
-                    if (this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "EMPTY") {
-                      this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] = "BLOCK"
-                    }
-                    if (this.gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "EMPTY") {
-                      this.gameHandler.map.grid[bmb.position.y - i][bmb.position.x] = "BLOCK"
-                    }
-                    if (this.gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "EMPTY") {
-                      this.gameHandler.map.grid[bmb.position.y][bmb.position.x + i] = "BLOCK"
-                    }
-                    if (this.gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "EMPTY") {
-                      this.gameHandler.map.grid[bmb.position.y][bmb.position.x - i] = "BLOCK"
-                    }
+                    this.gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) ?
+                      (this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "EMPTY") ?
+                        this.gameHandler.map.setCell(bmb.position.x, bmb.position.y + i, "BLOCK") : null : null
 
-                               this.gameHandler.players.forEach(pl => {
-               if((     (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y )  ||
-                              (pl.position.x === bmb.position.x+i && pl.position.y === bmb.position.y)||
-                              (pl.position.x === bmb.position.x-i && pl.position.y === bmb.position.y)||
-                              (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y+i)||
-                              (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y-i)) && !damaged){
-                                    pl.lives -= 1
-                                    damaged = true
-                              }
-                   
+                    this.gameHandler.map.inMapBound(bmb.position.x, bmb.position.y - i) ?
+                      (this.gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "EMPTY") ?
+                        this.gameHandler.map.setCell(bmb.position.x, bmb.position.y - i, "BLOCK") : null : null
 
-                  })
+                             this.gameHandler.map.inMapBound(bmb.position.x+i, bmb.position.y ) ?
+                      (this.gameHandler.map.grid[bmb.position.y ][bmb.position.x+i] === "EMPTY") ?
+                        this.gameHandler.map.setCell(bmb.position.x+i, bmb.position.y, "BLOCK") : null : null
+
+                        this.gameHandler.map.inMapBound(bmb.position.x-i, bmb.position.y ) ?
+                      (this.gameHandler.map.grid[bmb.position.y ][bmb.position.x-i] === "EMPTY") ?
+                        this.gameHandler.map.setCell(bmb.position.x-i, bmb.position.y, "BLOCK") : null : null
+
+
+                    this.gameHandler.players.forEach(pl => {
+
+                      if (((pl.position.x === bmb.position.x && pl.position.y === bmb.position.y) ||
+                        (pl.position.x === bmb.position.x + i && pl.position.y === bmb.position.y) ||
+                        (pl.position.x === bmb.position.x - i && pl.position.y === bmb.position.y) ||
+                        (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y + i) ||
+                        (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y - i))) {
+                        pl.lives -= 1
+                        damaged = true
+                      }
+
+                      console.log("liiiifes" , pl.lives);
+                      
+                    })
+
+                    
 
                   }
 
-        
-                  
+
+
                 }
-                Explode( this.gameHandler.players[0].stats.range)
+                Explode(this.gameHandler.players[0].stats.range)
                 this.gameHandler.activeBombs = this.gameHandler.activeBombs.filter(UserBmb => UserBmb.ownerId != bmb.ownerId)
               }, 2000);
             }
