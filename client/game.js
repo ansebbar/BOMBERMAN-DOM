@@ -5,7 +5,7 @@
 //     requestAnimationFrame(GameLoop)
 // }
 
-import { LogPage, Map, Player } from "./dom.js"
+import { LogPage, Map, Player , GameHandler , Game } from "./dom.js"
 import { useState , Component} from "./MiniFramework/app/state.js"
 
 
@@ -37,7 +37,7 @@ ws.onmessage = (e) => {
 
     }
     if (data.signal == "Snap"){
-        setGameState(data.data)
+        GameHandler(data.data)
     }
 
 
@@ -53,11 +53,10 @@ ws.onclose = (e) => {
 window.ws = ws
 
 
-// function GameLoop(){
-//         console.log("updateheeeeeeeeeeeeeeeeeeeeeeeeeeeeere" , gameState);
-//         updateDom(gameState)
-//         requestAnimationFrame(GameLoop)
+function GameLoop(){
+Game()
+requestAnimationFrame(GameLoop)
 
-// }
+}
 
-// GameLoop()
+GameLoop()
