@@ -229,6 +229,7 @@ body {
 /* bomb */
 
 .bomb {
+  position: fixed;
 
   width: 30px;
   height: 30px;

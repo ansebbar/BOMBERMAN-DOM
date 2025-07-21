@@ -10,10 +10,7 @@ export function LogPage() {
         if (e.key == "Enter") {
             ws.send(JSON.stringify({ signal: "NewUser", name: e.target.value }))
         }
-        if (e.key == "m") {
-            ws.send(JSON.stringify({ signal: "Map" }))
-        }
-
+  
     })
     return new Component({}, root, () => {
         return (createElement("input"
@@ -55,14 +52,16 @@ export function Player(props) {
 }
 
 eventManager.addevent("keydown", (e) => {
+    console.log("keeey", e.key);
+    
     if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "ArrowRight" || e.key === "ArrowLeft") ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) })
-    )
-
-    if (e.key === ' '){
+        e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) }))
+         }else if (e.code === "Space") {
         console.log("booooooomb");
-        
-        ws.send(JSON.stringify({signal:"Bomb"}))}
+
+        ws.send(JSON.stringify({ signal: "Bomb" }))
+    }
 })
 
 
