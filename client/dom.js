@@ -61,6 +61,8 @@ eventManager.addevent("keydown", (e) => {
 })
 
 
+
+
 // function Movement( key) {
 
 //    const PlayerDom  = root.querySelector(".Player")
@@ -77,15 +79,19 @@ eventManager.addevent("keydown", (e) => {
 
 // }
 
-var GameHandler = null
-const Game = new Component("div", root, () => {
-    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
-    if (!GameHandler) GameHandler = setGameState
-        return (
+// var GameHandler = null
+// const Game = new Component("div", root, () => {
 
-            gameState.players.length > 0 && Player(gameState.Player),
-            gameState.bombs.length > 0 && console.log("hello")
-            
-        )
-})
+//     const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
+//     if (!GameHandler) GameHandler = setGameState
+//     return (
+
+//         createElement("div", { class: "gameContainer" },
+
+//             gameState.players.length > 0 &&
+//             createElement("div", { class: "Player" , style:`left:${gameState.players[0].x}`} , "pl1")
+//         )
+
+//     )
+// })
 

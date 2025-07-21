@@ -53,11 +53,11 @@ ws.onclose = (e) => {
 window.ws = ws
 
 
-function GameLoop(){
-        console.log("updateheeeeeeeeeeeeeeeeeeeeeeeeeeeeere" , gameState);
-        updateDom(gameState)
-        requestAnimationFrame(GameLoop)
+// function GameLoop(){
+//         console.log("updateheeeeeeeeeeeeeeeeeeeeeeeeeeeeere" , gameState);
+//         updateDom(gameState)
+//         requestAnimationFrame(GameLoop)
 
-}
+// }
 
-GameLoop()
+// GameLoop()

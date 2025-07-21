@@ -1,5 +1,5 @@
-const MAP_WIDTH = 13;
-const MAP_HEIGHT = 13;
+const MAP_WIDTH = 26;
+const MAP_HEIGHT = 26;
 const WALL = 'WALL';
 const BLOCK = 'BLOCK';
 const EMPTY = 'EMPTY';
