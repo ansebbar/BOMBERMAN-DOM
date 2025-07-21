@@ -107,7 +107,7 @@ class Socket {
                 console.log("removed", this.gameHandler.activeBombs);
 
                 const Explode = (range) => {
-
+                  let damaged = false
                   for (let i = 1; i <= range; i++) {
                     if (this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "EMPTY") {
                       this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] = "BLOCK"
@@ -121,13 +121,24 @@ class Socket {
                     if (this.gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "EMPTY") {
                       this.gameHandler.map.grid[bmb.position.y][bmb.position.x - i] = "BLOCK"
                     }
-                  }
 
-                   this.gameHandler.players.forEach(pl => {
-                    pl.lives = pl.position.x === bmb.position.x && pl.position.y === bmb.position.y ? pl.lives-1 : pl.lives
-                    
+                               this.gameHandler.players.forEach(pl => {
+               if((     (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y )  ||
+                              (pl.position.x === bmb.position.x+i && pl.position.y === bmb.position.y)||
+                              (pl.position.x === bmb.position.x-i && pl.position.y === bmb.position.y)||
+                              (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y+i)||
+                              (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y-i)) && !damaged){
+                                    pl.lives -= 1
+                                    damaged = true
+                              }
+                   
+
                   })
 
+                  }
+
+        
+                  
                 }
                 Explode( this.gameHandler.players[0].stats.range)
                 this.gameHandler.activeBombs = this.gameHandler.activeBombs.filter(UserBmb => UserBmb.ownerId != bmb.ownerId)

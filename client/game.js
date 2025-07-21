@@ -16,9 +16,9 @@ var root = document.querySelector("#root")
  const Game = new Component("div", root, () => {
 
     const styles = {
-        "WALL": "WALL-cliff",
-        "BLOCK": "EMPTY ",
-        "EMPTY": "WALL-tech "
+        "WALL": "WALL-purple-rock",
+        "BLOCK": "WALL-ice  ",
+        "EMPTY": "ice-rock "
     }
 
     const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
