@@ -14,10 +14,22 @@ class Player {
   }
 
 
+ // Check and collect powerup at current position
+  checkPowerUpCollection() {
+    const powerUp = this.map.getPowerUpAt(this.position.x, this.position.y);
+    if (powerUp) {
+      powerUp.applyToPlayer(this);
+      this.map.removePowerUp(this.position.x, this.position.y);
+      return powerUp;
+    }
+    return null;
+  }
 
   move(dir) {
+      console.log("New ///////////////////////////////////////////////////////////////////////:");
 
-
+    let oldx= this.position.x;
+    let oldy= this.position.y;
     switch (dir) {
       case "Up":
         // console.log("fllll" , this.map.grid ,this.map.grid.flat() ,  this.map.grid.flat()[this.position.y-1] );
@@ -48,8 +60,17 @@ class Player {
         if ((this.position.x + 1 >= 1 && this.position.x <= this.map.grid.length - 1) &&
           this.map.grid[this.position.y][this.position.x + 1] == "BLOCK")
           this.position.x += 1
+
         break;
     }
+        // Check if the new position is walkable
+    if (!(this.position.x== oldx && this.position.y == oldy)) {
+      
+      // Check for powerup collection after movement
+      return this.checkPowerUpCollection();
+    }
+    
+    return null; // No movement or powerup collected
   }
 
 }

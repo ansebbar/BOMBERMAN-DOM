@@ -4,6 +4,7 @@ const WALL = 'WALL';
 const BLOCK = 'BLOCK';
 const EMPTY = 'EMPTY';
 const POWERUP = 'POWERUP';
+const { PowerUp, POWERUP_TYPES } = require('./PowerUp.js');
 
 //players positions
 const PLAYER_STARTS = [
@@ -16,6 +17,8 @@ const PLAYER_STARTS = [
 class Map {
     constructor() {
         this.grid = this.generateMap();
+        this.powerUps = []; // Track active powerups
+
     }
 
     generateMap() {
@@ -50,13 +53,45 @@ class Map {
         }
         return false;
     }
-
+    destroyBlock(x, y) {
+        if (this.grid[y][x] === BLOCK) {
+            this.grid[y][x] = EMPTY;
+            if (Math.random() < 0.3) { // 30% chance for powerup
+                const powerUpType = PowerUp.getRandomType();
+                const powerUp = new PowerUp(powerUpType, { x, y });
+                this.powerUps.push(powerUp);
+                console.log("PowerUp created at", x, y, "Type:", powerUpType);
+                this.grid[y][x] = POWERUP;
+            }
+            return true;
+        }
+        return false;
+    }
     getCell(x, y) {
         return this.grid[y][x];
     }
+        // Check if there's a powerup at the given position
+    getPowerUpAt(x, y) {
+        console.log(this.powerUps.find(powerUp => powerUp.position.x === x && powerUp.position.y === y));
+    }
 
-    setCell(x, y, value) {
-        this.grid[y][x] = value;
+    // Remove powerup when collected
+    removePowerUp(x, y) {
+        const index = this.powerUps.findIndex(powerUp => powerUp.position.x === x && powerUp.position.y === y);
+        if (index !== -1) {
+            const powerUp = this.powerUps.splice(index, 1)[0];
+            this.grid[y][x] = EMPTY; // Clear the tile
+            return powerUp;
+        }
+        return null;
+    }
+
+    // Check if position is walkable (not wall or block)
+    isWalkable(x, y) {
+        if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) {
+            return false;
+        }
+        return this.grid[y][x] !== WALL && this.grid[y][x] !== BLOCK;
     }
 }
 
