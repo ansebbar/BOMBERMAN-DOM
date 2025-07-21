@@ -231,8 +231,8 @@ body {
 .bomb {
   position: fixed;
 
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   background-color: red;
   z-index: 9;
 

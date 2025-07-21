@@ -1,5 +1,4 @@
 
-
 // function GameLoop(){
 //     UpdateDom()
 //     requestAnimationFrame(GameLoop)
@@ -119,6 +118,3 @@ window.ws = ws
 // }
 
 // GameLoop()
-
-
-

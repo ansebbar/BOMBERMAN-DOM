@@ -4,7 +4,7 @@ class Player {
     this.name = name
     this.id = Math.floor(Date.now() * Math.random()).toFixed()
     this.position = { x: 1, y: 1 }
-    this.stats = { speed: 5, range: 1, bCount: 1 }
+    this.stats = { speed: 5, range: 2, bCount: 1 }
     this.lives = 3
     this.map = map
   }

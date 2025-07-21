@@ -5,12 +5,12 @@ class Bomb{
         this.range = range
         this.timer = 2000
         this.Explostion()
-        console.log(position , "bmbmbmb psooos");
         
     }
 
     Explostion(){
-        setTimeout(()=>{"exploded"} , this.timer)
+        setTimeout(()=>{console.log("exploded");
+        } , this.timer)
     }
 }
 

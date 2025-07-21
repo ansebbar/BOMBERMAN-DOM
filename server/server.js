@@ -95,20 +95,47 @@ class Socket {
 
             const Direction = JSON.parse(message).Direction
             this.gameHandler.players[0].move(Direction)
-            console.log(JSON.parse(message));
-                  break;
+            // console.log(JSON.parse(message));
+            break;
 
 
           case "Bomb":
-            if (this.gameHandler.activeBombs.filter(UserBmb => this.gameHandler.players[0].id == UserBmb.ownerId).length < this.gameHandler.players[0].stats.bCount)
-{            const bmb = this.gameHandler.players[0].layBomb()
-  this.gameHandler.activeBombs.push(bmb)
-}            //need to optimize later
-            setTimeout(() => {
-              this.gameHandler.activeBombs.filter(UserBmb => this.gameHandler.players[0].id !== UserBmb.ownerId)
-            }, 2000);
+            if (this.gameHandler.activeBombs.filter(UserBmb => this.gameHandler.players[0].id == UserBmb.ownerId).length < this.gameHandler.players[0].stats.bCount) {
+              const bmb = this.gameHandler.players[0].layBomb()
+              this.gameHandler.activeBombs.push(bmb)
+              setTimeout(() => {
+                console.log("removed", this.gameHandler.activeBombs);
 
-                        break;
+                const Explode = (range) => {
+
+                  for (let i = 1; i <= range; i++) {
+                    if (this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "EMPTY") {
+                      this.gameHandler.map.grid[bmb.position.y + i][bmb.position.x] = "BLOCK"
+                    }
+                    if (this.gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "EMPTY") {
+                      this.gameHandler.map.grid[bmb.position.y - i][bmb.position.x] = "BLOCK"
+                    }
+                    if (this.gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "EMPTY") {
+                      this.gameHandler.map.grid[bmb.position.y][bmb.position.x + i] = "BLOCK"
+                    }
+                    if (this.gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "EMPTY") {
+                      this.gameHandler.map.grid[bmb.position.y][bmb.position.x - i] = "BLOCK"
+                    }
+                  }
+
+                   this.gameHandler.players.forEach(pl => {
+                    pl.lives = pl.position.x === bmb.position.x && pl.position.y === bmb.position.y ? pl.lives-1 : pl.lives
+                    
+                  })
+
+                }
+                Explode( this.gameHandler.players[0].stats.range)
+                this.gameHandler.activeBombs = this.gameHandler.activeBombs.filter(UserBmb => UserBmb.ownerId != bmb.ownerId)
+              }, 2000);
+            }
+
+
+            break;
 
 
         }
