@@ -16,6 +16,12 @@ var root = document.querySelector("#root")
   var GameHandler 
  const Game = new Component("div", root, () => {
 
+    const styles = {
+        "WALL": "WALL-cliff",
+        "BLOCK": "EMPTY ",
+        "EMPTY": "WALL-tech "
+    }
+
     const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
 
     if (!GameHandler) GameHandler = setGameState
@@ -23,11 +29,33 @@ var root = document.querySelector("#root")
 
     return (
 
-        
-        createElement("div", { class: "gameContainer" },
+    createElement("div", { class: "gameContainer" }, 
+  
             gameState().players.length > 0 &&
-            createElement("div", { class: "Player" , style:`top:${gameState().players[0].position.y+1 * 16}px ; left:${gameState().players[0].position.x+1 * 16}px` } , "pl1")
+      createElement("div", {
+        class: "Player",
+        style: `
+          transform: translate(
+            ${gameState().players[0].position.x * 60}px, 
+            ${gameState().players[0].position.y * 60}px
+          );
+        `
+      }, "pl1")
+      ,
+    // Map container with grid tiles
+    gameState().map?.grid?.length > 0 &&
+      createElement("div", { class: "Map_container", style: 'display: grid' }, 
+        gameState().map.grid.flatMap(line =>
+          line.map(block =>
+            createElement("div", { class: `tile ${styles[block]}` })
+          )
         )
+      ),
+
+
+  
+)
+
 
     )
 })

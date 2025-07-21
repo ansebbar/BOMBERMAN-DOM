@@ -26,7 +26,6 @@ export function LogPage() {
 
 export function Map(props) {
 
-    console.log("mppp", props.grid[7].length);
 
     const styles = {
         "WALL": "WALL-cliff",
@@ -57,7 +56,7 @@ export function Player(props) {
 
 eventManager.addevent("keydown", (e) => {
     if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "Arrow" || e.key === "ArrowLeft") ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) }))
+        e.key === "ArrowRight" || e.key === "ArrowLeft") ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) }))
 })
 
 

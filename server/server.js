@@ -79,31 +79,25 @@ class Socket {
 
         switch (data.signal) {
           case "NewUser":
-            const pl = new Player(data.name)
-            this.gameHandler.addplayer(pl)
             console.log(this.gameHandler.players);
+            this.gameHandler.map = new Map()
+            const pl = new Player(data.name , this.gameHandler.map)
+            this.gameHandler.addplayer(pl)
 
 
             break;
           case "Map":
-            const map = new Map()
-            console.log("maaap", map);
-            this.SendData(JSON.stringify({ signal: "Map", data: map }))
+            // const map = new Map()
+            // console.log("maaap", map);
+            // this.SendData(JSON.stringify({ signal: "Map", data: map }))
 
           case "PlayerMovement":
 
-              const dd = JSON.parse(message).Direction
-              switch (dd) {
-                case "Up" || "Down":
-                    this.gameHandler.players[0].position.y = this.gameHandler.players[0].position.y+1 
-                  break;
-              
-                default:
-                  break;
-              } 
+            const Direction = JSON.parse(message).Direction
+          this.gameHandler.players[0].move(Direction)
             console.log(JSON.parse(message));
-            
-   
+
+
         }
       })
 

@@ -23,7 +23,7 @@ const { log } = require("node:console")
 
     takeSnapshot(){
 
-        const snapShot = {players : this.players , phase:this.phase , bombs:this.activeBombs }
+        const snapShot = {players : this.players , phase:this.phase , bombs:this.activeBombs , map:this.map}
     // const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
     this.ws.SendData(JSON.stringify({signal:"Snap" , data:snapShot}))
     }
