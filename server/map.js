@@ -35,6 +35,11 @@ class Map {
                 }
             }
         }
+        for (let y= MAP_HEIGHT / 3 ; y< MAP_HEIGHT;y+ MAP_HEIGHT / 3) {
+            for (let x = MAP_WIDTH / 3; x< MAP_WIDTH;x + MAP_WIDTH / 3){
+                    grid[y][x] = WALL;
+            }
+        }
         return grid;
     }
 
@@ -45,7 +50,7 @@ class Map {
     destroyBlock(x, y) {
         if (this.grid[y][x] === BLOCK) {
             this.grid[y][x] = EMPTY;
-            if (Math.random() < 0.3) this.grid[y][x] = POWERUP; //30% chance for powerup
+            if (Math.random() < 0.3) this.grid[y][x] = POWERUP;
             return true;
         }
         return false;
