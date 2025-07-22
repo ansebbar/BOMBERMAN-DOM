@@ -27,11 +27,14 @@ var root = document.querySelector("#root")
     if (!GameHandler) GameHandler = setGameState
             console.log(gameState() , "staaaaaaaaaaaate");
 
-    return (
-  createElement("div", { class: "gameContainer" },
-(    gameState().timer >= 0   ? createElement("p" , {class:"timer"}, gameState().timer) : null),
-    gameState().phase === "running" &&
-    createElement("div", {}, [
+
+    const childs = []
+    if (gameState().timer >= 0){
+      childs.push( createElement("p" , {class:"timer"},`${Math.ceil( gameState().timer/1000)}s`))
+    }
+    if (gameState().phase === "running"){
+childs.push(
+   createElement("div", {}, [
 
       // Player
       gameState().players.length > 0 &&
@@ -68,6 +71,12 @@ var root = document.querySelector("#root")
         }, "bomb")
       )
     ])
+)
+    }
+    return (
+  createElement("div", { class: "gameContainer" },
+
+...childs
   )
 )
 

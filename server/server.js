@@ -30,7 +30,10 @@ SendData(data) {
 
         switch (data.signal) {
           case "NewUser":
-            gameHandler.map = new Map();
+            if (!gameHandler.map){
+
+              gameHandler.map = new Map();
+            }
             const pl = new Player(data.name, gameHandler.map , gameHandler.PlayersPos[gameHandler.players.length]);
             gameHandler.addplayer(pl);
             console.log("plllllllllll", gameHandler.players, "iddd", gameHandler.id);

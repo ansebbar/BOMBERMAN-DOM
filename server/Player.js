@@ -55,6 +55,7 @@ class Player {
           this.map.grid[this.position.y][this.position.x + 1] == "BLOCK" 
           && activeBombs.every(bm => (bm.x != this.position.x+1) ||( bm.y != this.position.y)
         ))
+        
           this.position.x += 1
         break;
     }
