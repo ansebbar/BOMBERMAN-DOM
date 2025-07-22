@@ -51,18 +51,7 @@ if (!PlayerState) PlayerState = SetPlayerState;
   });
   IsPLayer = chatView()
   if (!GameHandler) GameHandler = setGameState;
-//    if (PlayerStat() === "dead") {
-//       console.log({"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh":h});
-      
-//       return
-//     }
 
-//     if((!gameState().players.some(pl => pl.id == ClientId )) && gameState().phase == "running"){
-      
-// SetPlayerState("dead")
-//     }
-
-  
   
   if (!enableChat) {
     enableChat = SetChatView
@@ -72,17 +61,17 @@ if (!PlayerState) PlayerState = SetPlayerState;
   const children = [];
 
 
-
-  if (chatView()) children.push(chat.render())
+  if (chatView()) children.push(chat.render(), createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`))
   if (gameData.timer >= 0) {
     children.push(createElement("p", { class: "timer" }, `${Math.ceil(gameData.timer / 1000)}s`));
   }
 
   if (gameState().phase === "waiting" && !chatView()) {
-    children.push(createElement("input"
+    children.push(
+      createElement("input"
       , { type: "text", class: "NameInput", placeholder: "Enter Your Name" }
     )
-    )
+  ,createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`)   )
   }
 
 if(PlayerStat() != "alive") {
@@ -97,7 +86,9 @@ createElement("div", {class:"dead"}, "YOU LOST")
     
     children.push(createElement("div", {}, [
 
-
+,
+createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`)
+,
 
      createElement("div" , {class:"Nav"}, [// Players
       createElement("div", { class: "PlayerName" }, currentPlayer.name),
@@ -163,7 +154,6 @@ createElement("div", {class:"dead"}, "YOU LOST")
     ]));
   }
 
-    children.push(createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`));
   
 
   return createElement("div", { class: "gameContainer" }, ...children );
