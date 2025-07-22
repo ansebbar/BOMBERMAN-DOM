@@ -8,7 +8,7 @@ export function LogPage() {
     console.log("rooot", root);
 
     eventManager.addevent("keydown", ".NameInput", (e) => {
-        if (e.key == "Enter") {
+        if (e.key == "Enter" && e.target.value != "") {
             ws.send(JSON.stringify({ signal: "NewUser", name: e.target.value }))
         }
   
