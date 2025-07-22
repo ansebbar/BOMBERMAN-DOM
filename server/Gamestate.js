@@ -7,7 +7,7 @@ class Gamestate {
         this.players = []
         this.activeBombs = []
         this.map = null
-        this.phase = "prewait"
+        this.phase = "waiting"
         this.tick()
         this.countdown = 5000
         this.roomTimout = 7000
@@ -31,9 +31,9 @@ class Gamestate {
     }
 
     takeSnapshot() {
-        if(this.phase === "running" && this.players.length === 1){
-            this.phase = "ended"
-        }
+        // if(this.phase === "running" && this.players.length === 1){
+        //     this.phase = "ended"
+        // }
 
 
         const Timer = (this.phase === "waiting" && this.roomTimout < 7000 && this.roomTimout > 0) ?

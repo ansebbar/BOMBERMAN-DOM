@@ -20,7 +20,7 @@ class Socket {
   SendData(data) {
     this.wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        
+
         client.send(data);
       }
     });
@@ -40,22 +40,17 @@ class Socket {
         switch (data.signal) {
           case "NewUser":
             if (!gameHandler.map) {
-              // console.log("cllllllllllllllll" , this.wss.clients);
-
               gameHandler.map = new Mapp();
             }
             const pl = new Player(data.name, gameHandler.map, gameHandler.PlayersPos[gameHandler.players.length], ClientId);
             gameHandler.addplayer(pl);
             gameHandler.phase = "waiting"
-
-            // console.log("plllllllllll", gameHandler.players, "iddd", gameHandler.id);
+            this.SendToClient(ClientId, JSON.stringify({ signal: "enableChat" }))
             break;
 
           case "PlayerMovement":
             const Direction = JSON.parse(message).Direction;
-            gameHandler.players.find(p => p.id == (JSON.parse(message).ClientId)).move(Direction, gameHandler.activeBombs.map(b => b.position))
-
-              ;
+            gameHandler.players.find(p => p.id == (JSON.parse(message).ClientId)).move(Direction, gameHandler.activeBombs.map(b => b.position));
             break;
 
           case "Bomb":
@@ -68,31 +63,31 @@ class Socket {
             ) {
               const bmb = currentPlayer.layBomb();
               gameHandler.activeBombs.push(bmb);
-              let bombData = [1,1,1,1]
+              let bombData = [1, 1, 1, 1]
               setTimeout(() => {
                 const Explode = (range) => {
                   for (let i = 1; i <= range; i++) {
                     // Directions: down, up, right, left
-                       if (bombData[0] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) &&
-                      ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y+i][bmb.position.x])) {
-                      gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "WALL" ? bombData[0] = 0:false;
-                      gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y + i) 
+                    if (bombData[0] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) &&
+                      ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y + i][bmb.position.x])) {
+                      gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "WALL" ? bombData[0] = 0 : false;
+                      gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y + i)
                     }
                     if (bombData[1] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y - i) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y - i][bmb.position.x])) {
-                      gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "WALL" ? bombData[1] = 0:false;
+                      gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "WALL" ? bombData[1] = 0 : false;
 
                       gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y - i)
                     }
                     if (bombData[2] === 1 && gameHandler.map.inMapBound(bmb.position.x + i, bmb.position.y) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x + i])) {
-                        gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "WALL" ? bombData[2] = 0:false; 
-                      gameHandler.map.destroyBlock(bmb.position.x+i, bmb.position.y )
+                      gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "WALL" ? bombData[2] = 0 : false;
+                      gameHandler.map.destroyBlock(bmb.position.x + i, bmb.position.y)
                     }
                     if (bombData[3] === 1 && gameHandler.map.inMapBound(bmb.position.x - i, bmb.position.y) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x - i])) {
-                        gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "WALL" ? bombData[3] = 0:false;
-                      gameHandler.map.destroyBlock(bmb.position.x-i, bmb.position.y)
+                      gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "WALL" ? bombData[3] = 0 : false;
+                      gameHandler.map.destroyBlock(bmb.position.x - i, bmb.position.y)
 
                     }
 
@@ -134,17 +129,17 @@ class Socket {
             this.SendData(JSON.stringify({
               signal: "ChatMessage",
               message: (data.message),
-              player:    gameHandler.players.find(pl => pl.id == data.ClientId).name || "unknown"
+              player: gameHandler.players.find(pl => pl.id == data.ClientId).name || "unknown"
             }))
 
-      // const mmm = JSON.stringify({
-      //         signal: "ChatMessage",
-      //         message: data.message,
-      //         name: data.name || gameHandler.players.find(p => p.id === data.ClientId)?.name || "Unknown",
-      //         // ClientId: data.ClientId
-      //       })
+            // const mmm = JSON.stringify({
+            //         signal: "ChatMessage",
+            //         message: data.message,
+            //         name: data.name || gameHandler.players.find(p => p.id === data.ClientId)?.name || "Unknown",
+            //         // ClientId: data.ClientId
+            //       })
 
-            
+
             break;
         }
       });

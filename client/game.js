@@ -12,7 +12,8 @@ const root = document.querySelector("#root");
 // === WebSocket ===
 const ws = new WebSocket('ws://127.0.0.1:5500');
 const chat = new Chat(ws);
-
+var PlayerState
+var enableChat
 export let ClientId;
 let GameHandler = null;
 export let gameData  // live game state for GameLoop
@@ -32,7 +33,9 @@ const Game = new Component("div", root, () => {
     "BLOCK": "WALL-ice",
     "EMPTY": "ice-rock"
   };
-
+  const [PlayerStat , SetPlayerState] = useState("alive")
+  if (!PlayerStat)SetPlayerState
+  const [chatView, SetChatView] = useState(false)
   const [gameState, setGameState] = useState({
     phase: "",
     players: [],
@@ -41,31 +44,29 @@ const Game = new Component("div", root, () => {
     timer: -1
   });
 
+  if (!enableChat) {
+    enableChat = SetChatView
+  }
   // Set external references
   if (!GameHandler) GameHandler = setGameState;
   gameData = gameState();
-  // Render logic
   const children = [];
-
+  if (chatView()) children.push(chat.render())
   if (gameData.timer >= 0) {
     children.push(createElement("p", { class: "timer" }, `${Math.ceil(gameData.timer / 1000)}s`));
   }
 
-  if (gameState().phase === "prewait") {
+  if (gameState().phase === "waiting" && !chatView()) {
     children.push(createElement("input"
       , { type: "text", class: "NameInput", placeholder: "Enter Your Name" }
     )
     )
   }
 
-  if (gameData.phase === "waiting"){
-     children.push(chat.render())  
-  }
 
 
   if (gameData.phase === "running") {
     children.push(createElement("div", {}, [
-   
       // Players
       ...gameData.players.map((pl, index) => {
         const pos = pl.currentPosition || pl.position; // Use interpolated position
@@ -105,7 +106,7 @@ const Game = new Component("div", root, () => {
     ]));
   }
 
-  
+
   return createElement("div", { class: "gameContainer" }, ...children);
 });
 let lastTime = performance.now();
@@ -180,6 +181,10 @@ ws.onmessage = (e) => {
 
   if (msg.signal === "Snap") {
     GameHandler(msg.data);
+  }
+
+  if (msg.signal === "enableChat") {
+    enableChat(true)
   }
 
 };
