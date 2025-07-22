@@ -3,23 +3,58 @@ import { createElement } from './MiniFramework/app/dom.js';
 import { eventManager } from './MiniFramework/app/events.js'
 var root = document.querySelector("#root")
 
-export function LogPage() {
-    console.log("rooot", root);
+// export function LogPage() {
+//     console.log("rooot", root);
 
-    eventManager.addevent("keydown", ".NameInput", (e) => {
-        if (e.key == "Enter") {
-            ws.send(JSON.stringify({ signal: "NewUser", name: e.target.value }))
-        }
+//     eventManager.addevent("keydown", ".NameInput", (e) => {
+//         if (e.key == "Enter") {
+//             ws.send(JSON.stringify({ signal: "NewUser", name: e.target.value }))
+//         }
   
-    })
+//     })
+//     return new Component({}, root, () => {
+//         return (createElement("input"
+//             , { type: "text", class: "NameInput", placeholder: "Enter Your Name" }
+//         )
+//         )
+//     })
+// }
+export function LogPage() {
+        let shouldShowLogin = true;
+    //const [isVisible, setIsVisible] = useState(true);
+    eventManager.addevent("keydown", ".login-input", (e) => {
+        if (e.key == "Enter" && e.target.value.trim()) {
+            if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+                window.ws.send(JSON.stringify({ 
+                    signal: "NewUser", 
+                    name: e.target.value 
+                }));
+                const loginElement = document.querySelector('.login-overlay');
+                if (loginElement) {
+                    loginElement.style.display = 'none';
+                }
+                //setIsVisible(false);
+            }
+        }
+    });
+    
     return new Component({}, root, () => {
-        return (createElement("input"
-            , { type: "text", class: "NameInput", placeholder: "Enter Your Name" }
-        )
-        )
-    })
+        //if (!isVisible()) return null;
+        return createElement("div", { class: "login-overlay" },
+            createElement("div", { class: "login-box" },
+                createElement("h1", { class: "login-title" }, "BOMBERMAN"),
+                createElement("input", {
+                    type: "text",
+                    class: "login-input",
+                    placeholder: "Enter Your Nickname"
+                }),
+                createElement("p", { class: "login-instruction" }, 
+                    "Press ENTER to join the battle"
+                )
+            )
+        );
+    });
 }
-
 
 export function Map(props) {
 

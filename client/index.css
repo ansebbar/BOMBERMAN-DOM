@@ -237,3 +237,133 @@ body {
   z-index: 9;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== STYLE LOGIN BOMBERMAN ===== */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #1a1a2e 0%, #16213e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.login-box {
+    background: rgba(25, 25, 45, 0.9);
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    border: 1px solid #2a2a4a;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.login-title {
+    color: #f1c40f;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Arial Black', sans-serif;
+    letter-spacing: 1px;
+}
+
+.login-input {
+    width: 280px;
+    padding: 15px 25px;
+    font-size: 1.1rem;
+    background: rgba(30, 30, 50, 0.8);
+    border: 2px solid #3498db;
+    border-radius: 50px;
+    color: #ecf0f1;
+    outline: none;
+    transition: all 0.3s;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.login-input::placeholder {
+    color: #95a5a6;
+}
+
+.login-input:focus {
+    border-color: #f1c40f;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+    transform: scale(1.02);
+}
+
+.login-instruction {
+    color: #bdc3c7;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Effet Bomberman */
+.login-box::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, 
+                              #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    background-size: 400%;
+    border-radius: 20px;
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0.5;
+    animation: glowing 20s linear infinite;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
