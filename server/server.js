@@ -21,6 +21,7 @@ class Socket {
   SendData(data) {
     this.wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
+        
         client.send(data);
       }
     });
@@ -86,13 +87,13 @@ class Socket {
                     if (gameHandler.map.inMapBound(bmb.position.x + i, bmb.position.y) &&
                       gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "EMPTY") {
                       // gameHandler.map.setCell(bmb.position.x + i, bmb.position.y, "BLOCK");
-                      gameHandler.map.destroyBlock(bmb.position.x+1, bmb.position.y )
+                      gameHandler.map.destroyBlock(bmb.position.x + 1, bmb.position.y)
 
                     }
                     if (gameHandler.map.inMapBound(bmb.position.x - i, bmb.position.y) &&
                       gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "EMPTY") {
                       // gameHandler.map.setCell(bmb.position.x - i, bmb.position.y, "BLOCK");
-                      gameHandler.map.destroyBlock(bmb.position.x-1, bmb.position.y)
+                      gameHandler.map.destroyBlock(bmb.position.x - 1, bmb.position.y)
 
                     }
 
@@ -119,6 +120,31 @@ class Socket {
                 );
               }, 2000);
             }
+            break;
+
+          case "ChatMessage":
+            // // Diffuser le message à tous les joueurs
+            // wss.clients.forEach(client => {
+            //   if (client.readyState === WebSocket.OPEN) {
+            //     client.send(JSON.stringify({
+
+            //     }));
+            //   }
+            // });
+
+            this.SendData(JSON.stringify({
+              signal: "ChatMessage",
+              message: (data.message)
+            }))
+
+      // const mmm = JSON.stringify({
+      //         signal: "ChatMessage",
+      //         message: data.message,
+      //         name: data.name || gameHandler.players.find(p => p.id === data.ClientId)?.name || "Unknown",
+      //         // ClientId: data.ClientId
+      //       })
+
+            
             break;
         }
       });

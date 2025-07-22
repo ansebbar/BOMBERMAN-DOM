@@ -31,11 +31,17 @@ class Gamestate {
     }
 
     takeSnapshot() {
+        if(this.phase === "running" && this.players.length === 1){
+            this.phase = "ended"
+        }
+
+
         const Timer = (this.phase === "waiting" && this.roomTimout < 7000 && this.roomTimout > 0) ?
             this.roomTimout : (this.phase === "waiting" && this.countdown < 5000 && this.countdown > 0)
                 ? this.countdown : -1
         const snapShot = { players: this.players, phase: this.phase, bombs: this.activeBombs, map: this.map, timer: Timer  }
-        // const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
+        // const data = this.phase === 'waiting' ? 'waiting' : "dataat" 
+        
         this.ws.SendData(JSON.stringify({ signal: "Snap", data: snapShot }))
     }
     tick() {

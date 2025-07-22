@@ -1,8 +1,25 @@
 import { Component, useState } from './MiniFramework/app/state.js';
 import { createElement } from './MiniFramework/app/dom.js';
 import { eventManager } from './MiniFramework/app/events.js'
-import { ClientId } from './game.js';
+import { ClientId , gameData } from './game.js';
 var root = document.querySelector("#root")
+
+
+eventManager.addevent("keydown", (e) => {
+    console.log("keeey", e.key);
+    if (gameData.phase !== "ended"){
+
+    if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
+        e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) , ClientId: ClientId }))
+         }else if (e.code === "Space") {
+        console.log("booooooomb");
+
+        ws.send(JSON.stringify({ signal: "Bomb" , ClientId: ClientId}))
+    }
+    }
+
+})
 
 export function LogPage() {
     console.log("rooot", root);
@@ -52,18 +69,6 @@ export function Player(props) {
     })
 }
 
-eventManager.addevent("keydown", (e) => {
-    console.log("keeey", e.key);
-    
-    if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) , ClientId: ClientId }))
-         }else if (e.code === "Space") {
-        console.log("booooooomb");
-
-        ws.send(JSON.stringify({ signal: "Bomb" , ClientId: ClientId}))
-    }
-})
 
 
 
