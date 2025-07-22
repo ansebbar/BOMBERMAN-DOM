@@ -13,12 +13,12 @@ class Gamestate {
         this.roomTimout = 7000
         this.PlayersPos = {
             0: { x: 1, y: 1 },
-            1: {x:1 , y: 13},
-            2: {x:13 , y: 13},
-            3: {x:13 , y: 1}
+            1: { x: 1, y: 13 },
+            2: { x: 13, y: 13 },
+            3: { x: 13, y: 1 }
         }
     }
-    
+
     addplayer(player) {
         if (this.players.length < 4) {
             this.players.push(player)
@@ -26,7 +26,7 @@ class Gamestate {
 
     }
     removeplayer(playerId) {
-        this.players.filter(p => p.id !== playerId)
+        this.players = this.players.filter(p => p.id !== playerId)
 
     }
 
@@ -34,7 +34,7 @@ class Gamestate {
         const Timer = (this.phase === "waiting" && this.roomTimout < 7000 && this.roomTimout > 0) ?
             this.roomTimout : (this.phase === "waiting" && this.countdown < 5000 && this.countdown > 0)
                 ? this.countdown : -1
-        const snapShot = { players: this.players, phase: this.phase, bombs: this.activeBombs, map: this.map, timer: Timer }
+        const snapShot = { players: this.players, phase: this.phase, bombs: this.activeBombs, map: this.map, timer: Timer  }
         // const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
         this.ws.SendData(JSON.stringify({ signal: "Snap", data: snapShot }))
     }

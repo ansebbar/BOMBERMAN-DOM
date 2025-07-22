@@ -210,10 +210,25 @@ body {
   image-rendering: pixelated;
 }
 
-.timer{
+.timer {
   font-size: 30px;
   color: teal;
 }
+
+
+.powerUp {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  background-color: rgb(136, 255, 0);
+  z-index: 10;
+}
+
+.range {}
+
+.speed {}
+
+.bombCount {}
 
 /* Plaayer styling */
 
@@ -222,7 +237,7 @@ body {
   height: 60px;
 
   position: absolute;
-  transition: transform 0.1s linear;
+  transition: transform 0.3s linear;
   /* transform: scale(1.44); */
   background-color: rgb(255, 255, 255);
   z-index: 10;

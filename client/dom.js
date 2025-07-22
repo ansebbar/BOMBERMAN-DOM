@@ -61,7 +61,7 @@ eventManager.addevent("keydown", (e) => {
          }else if (e.code === "Space") {
         console.log("booooooomb");
 
-        ws.send(JSON.stringify({ signal: "Bomb" }))
+        ws.send(JSON.stringify({ signal: "Bomb" , ClientId: ClientId}))
     }
 })
 

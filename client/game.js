@@ -29,6 +29,8 @@ var root = document.querySelector("#root")
 
 
     const childs = []
+
+
     if (gameState().timer >= 0){
       childs.push( createElement("p" , {class:"timer"},`${Math.ceil( gameState().timer/1000)}s`))
     }
@@ -69,7 +71,18 @@ childs.push(
           class: "bomb",
           style: `left:${bmb.position.x * 60}px; top:${bmb.position.y * 60}px`
         }, "bomb")
-      )
+      ) , 
+
+
+          (gameState()?.map?.powerUps?.length > 0 ) && 
+
+          gameState().map.powerUps.map(pwr =>   createElement("div", {
+          class: "powerUp",
+          style: `left:${pwr.position.x * 60}px; top:${pwr.position.y * 60}px`
+        }, "powerUp"))
+      
+    
+
     ])
 )
     }
@@ -84,12 +97,6 @@ childs.push(
 
 ws.onopen = (e) => {
 
-//  const rr = JSON.parse(e)
-//     console.log("cliiiiiiiientID", e);
-//   if (!ClientId){
-//         // ClientId = data.data.ClientId
-        
-//       }
     
     const ll = LogPage()
 
