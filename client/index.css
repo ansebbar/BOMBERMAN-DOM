@@ -7,7 +7,7 @@
   background-repeat: no-repeat;
   display: inline-block;
   transform: scale(3.75);
-  /* 16px * 3.75 ≈ 60px */
+  /* 16px * 3.75 â‰ˆ 60px */
   transform-origin: top left;
   image-rendering: pixelated;
 }
@@ -22,6 +22,9 @@
   /* margin: 50px auto; */
   gap: 0;
 }
+
+
+
 
 .gameContainer {
   width: 500px;
@@ -265,7 +268,7 @@ body {
 .chat-container {
     position: absolute;
     right: 10px;
-    bottom: 10px;
+    bottom: 15px;
     width: 250px;
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid #444;
@@ -307,4 +310,36 @@ body {
   font-size: 150px;
   background-color: aqua;
   z-index: 1111;
+}
+
+.Nav{
+    position: absolute;
+    right: 10px;
+    bottom: 150p;
+    width: 255px;
+    background: rgba(255, 247, 247, 0.7);
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 8px;
+    color: rgb(0, 0, 0);
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+.PlayerCount {
+    position: absolute;
+    right: 10px;
+    bottom: 350px;
+    width: 255px;
+    background: rgba(255, 247, 247, 0.7);
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 8px;
+    color: rgb(0, 0, 0);
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+body{
+  color: white;
 }

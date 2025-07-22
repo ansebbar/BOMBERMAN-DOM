@@ -62,7 +62,6 @@ if (!PlayerState) PlayerState = SetPlayerState;
 // SetPlayerState("dead")
 //     }
 
-   
   
   
   if (!enableChat) {
@@ -71,6 +70,9 @@ if (!PlayerState) PlayerState = SetPlayerState;
   // Set external references
   gameData = gameState();
   const children = [];
+
+
+
   if (chatView()) children.push(chat.render())
   if (gameData.timer >= 0) {
     children.push(createElement("p", { class: "timer" }, `${Math.ceil(gameData.timer / 1000)}s`));
@@ -91,8 +93,38 @@ createElement("div", {class:"dead"}, "YOU LOST")
 }
 
   if (gameData.phase === "running") {
+          const currentPlayer = gameData.players.find(pl => pl.id === ClientId);
+    
     children.push(createElement("div", {}, [
-      // Players
+
+
+
+     createElement("div" , {class:"Nav"}, [// Players
+      createElement("div", { class: "PlayerName" }, currentPlayer.name),
+      currentPlayer.lives > 0 ? 
+        createElement("div", {
+          class: "PlayerLives",
+          style: `left: 0px; top: 0px;`
+        }, `❤️ x${currentPlayer.lives}`) : null,
+      currentPlayer.stats.bCount > 0 ?
+        createElement("div", {
+          class: "PlayerBombs",
+          style: `left: 0px; top: 20px;`
+        }, `💣 x${currentPlayer.stats.bCount}`)  : null,
+      currentPlayer.stats.speed > 0 ?
+        createElement("div", {
+          class: "PlayerSpeed",
+          style: `left: 0px; top: 40px;`
+        }, `⚡ x${currentPlayer.stats.speed}`) : null,
+      currentPlayer.stats.range > 0 ?
+        createElement("div", {
+          class: "PlayerRange",
+          style: `left: 0px; top: 60px;`
+        }, `📏 x${currentPlayer.stats.range}`) : null]
+        ) 
+        ,
+      
+       
       ...gameData.players.map((pl, index) => {
         const pos = pl.currentPosition || pl.position; // Use interpolated position
         return createElement("div", {
@@ -131,8 +163,10 @@ createElement("div", {class:"dead"}, "YOU LOST")
     ]));
   }
 
+    children.push(createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`));
+  
 
-  return createElement("div", { class: "gameContainer" }, ...children);
+  return createElement("div", { class: "gameContainer" }, ...children );
 });
 let lastTime = performance.now();
 
@@ -210,6 +244,14 @@ ws.onmessage = (e) => {
 
   if (msg.signal === "enableChat") {
     enableChat(true)
+  }
+  if (msg.signal == "PlayerDisconnected") {
+    const playerId = msg.data;
+    console.log("Player disconnected:", playerId);
+    GameHandler(prev => ({
+      ...prev,
+      players: prev.players.filter(pl => pl.id !== playerId)
+    }));
   }
 
   if(msg.signal === "YouLost"){

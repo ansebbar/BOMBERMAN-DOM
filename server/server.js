@@ -69,27 +69,26 @@ class Socket {
 
               setTimeout(() => {
                 const Explode = (range) => {
-                  for (let i = 1; i <= range; i++) {
-                    // Directions: down, up, right, left
+                  for (let i = 1; i <= range && i <= 3; i++) {
                     if (bombData[0] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y + i][bmb.position.x])) {
-                      gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "WALL" ? bombData[0] = 0 : false;
+                      bombData[0] = 0 ;
                       gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y + i)
                     }
                     if (bombData[1] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y - i) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y - i][bmb.position.x])) {
-                      gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "WALL" ? bombData[1] = 0 : false;
+                      bombData[1] = 0 ;
 
                       gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y - i)
                     }
                     if (bombData[2] === 1 && gameHandler.map.inMapBound(bmb.position.x + i, bmb.position.y) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x + i])) {
-                      gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "WALL" ? bombData[2] = 0 : false;
+                      bombData[2] = 0 ;
                       gameHandler.map.destroyBlock(bmb.position.x + i, bmb.position.y)
                     }
                     if (bombData[3] === 1 && gameHandler.map.inMapBound(bmb.position.x - i, bmb.position.y) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x - i])) {
-                      gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "WALL" ? bombData[3] = 0 : false;
+                      bombData[3] = 0;
                       gameHandler.map.destroyBlock(bmb.position.x - i, bmb.position.y)
 
                     }
@@ -156,6 +155,22 @@ class Socket {
 
       this.ws.on("close", () => {
         console.log('Client disconnected');
+        this.clients.delete(ClientId);
+gameHandler.removeplayer(ClientId)
+        // const disconnectedPlayer = gameHandler.players.find(p => p.id === ClientId);
+        // if (disconnectedPlayer) {
+        //   gameHandler.removeplayer(disconnectedPlayer.id);
+        //   console.log(`Player ${disconnectedPlayer.name} disconnected`);
+        // }
+        // wss.clients.forEach(client => {
+        //   if (client.readyState === WebSocket.OPEN) {
+        //     client.send(JSON.stringify({
+        //       signal: "PlayerDisconnected",
+        //       playerId: ClientId,
+        //       playerName: disconnectedPlayer ? disconnectedPlayer.name : "Unknown"
+        //     }));
+        //   }
+        // })
       });
     });
   }

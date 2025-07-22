@@ -79,7 +79,7 @@ class Map {
                 const powerUpType = PowerUp.getRandomType();
                 const powerUp = new PowerUp(powerUpType, { x, y });
                 this.powerUps.push(powerUp);
-                console.log("PowerUp created at", x, y, "Type:", powerUpType);
+                // console.log("PowerUp created at", x, y, "Type:", powerUpType);
                 // this.grid[y][x] = POWERUP;
             }
             return true;
