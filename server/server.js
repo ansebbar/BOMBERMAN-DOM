@@ -93,7 +93,7 @@ class Socket {
           case "PlayerMovement":
 
             const Direction = JSON.parse(message).Direction
-            this.gameHandler.players[0].move(Direction)
+            this.gameHandler.players[0].move(Direction , this.gameHandler.activeBombs.map(b => b.position))
             // console.log(JSON.parse(message));
             break;
 
@@ -127,7 +127,7 @@ class Socket {
 
                     this.gameHandler.players.forEach(pl => {
 
-                      if (((pl.position.x === bmb.position.x && pl.position.y === bmb.position.y) ||
+                      if ((((pl.position.x === bmb.position.x && pl.position.y === bmb.position.y) && i === 1 )||
                         (pl.position.x === bmb.position.x + i && pl.position.y === bmb.position.y) ||
                         (pl.position.x === bmb.position.x - i && pl.position.y === bmb.position.y) ||
                         (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y + i) ||

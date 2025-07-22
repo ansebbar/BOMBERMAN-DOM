@@ -15,9 +15,10 @@ class Player {
 
 
 
-  move(dir) {
+  move(dir , activeBombs) {
 
-
+    console.log(activeBombs , "bbmmmmmmb");
+    
     switch (dir) {
       case "Up":
         // console.log("fllll" , this.map.grid ,this.map.grid.flat() ,  this.map.grid.flat()[this.position.y-1] );
@@ -27,26 +28,33 @@ class Player {
         console.log("POOOOS", this.map.grid[this.position.y - 1][this.position.x], this.position.y - 1, this.position.x);
 
         if ((this.position.y - 1 >= 1 && this.position.y <= this.map.grid.length - 1) &&
-          this.map.grid[this.position.y - 1][this.position.x] == "BLOCK") this.position.y -= 1
+          this.map.grid[this.position.y - 1][this.position.x] == "BLOCK" && activeBombs.every(bm => bm.x != this.position.x ||bm.y != this.position.y -1)) this.position.y -= 1
 
         break
       case "Down":
         if ((this.position.y + 1 >= 1 && this.position.y <= this.map.grid.length - 1) &&
-          this.map.grid[this.position.y + 1][this.position.x] == "BLOCK")
+          this.map.grid[this.position.y + 1][this.position.x] == "BLOCK"&& activeBombs.every(bm => bm.x != this.position.x || bm.y != this.position.y +1))
           this.position.y += 1
         break
 
       case "Left":
         console.log("immm here");
         if ((this.position.x - 1 >= 1 && this.position.x <= this.map.grid.length - 1) &&
-          this.map.grid[this.position.y][this.position.x - 1] == "BLOCK")
+          this.map.grid[this.position.y][this.position.x - 1] == "BLOCK"
+        && activeBombs.every(bm => bm.x != this.position.x-1 || bm.y != this.position.y ))
           this.position.x -= 1
         break
 
 
       case "Right":
+
+      console.log("aaaaaa" , activeBombs.every(bm => bm.x != this.position.x+1 || bm.y != this.position.y
+        ));
+      
         if ((this.position.x + 1 >= 1 && this.position.x <= this.map.grid.length - 1) &&
-          this.map.grid[this.position.y][this.position.x + 1] == "BLOCK")
+          this.map.grid[this.position.y][this.position.x + 1] == "BLOCK" 
+          && activeBombs.every(bm => (bm.x != this.position.x+1) ||( bm.y != this.position.y)
+        ))
           this.position.x += 1
         break;
     }

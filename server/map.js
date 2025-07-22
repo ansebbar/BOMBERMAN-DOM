@@ -19,7 +19,7 @@ class Map {
     }
 
     generateMap() {
-        const grid = Array.from({ length: MAP_HEIGHT }, () => Array(MAP_WIDTH).fill(EMPTY));
+        const grid = Array.from({ length: MAP_HEIGHT }, () => Array(MAP_WIDTH).fill(BLOCK));
         for (let y = 0; y < MAP_HEIGHT; y++) {
             for (let x = 0; x < MAP_WIDTH; x++) {
                 if ((x == 0 || y == 0 || x == MAP_WIDTH - 1 || y == MAP_HEIGHT - 1) || (x % 2 === 0 && y % 2 === 0 && x !== MAP_WIDTH - 2 && y != MAP_HEIGHT - 2)) {
@@ -33,9 +33,11 @@ class Map {
                 if (grid[y][x] === BLOCK && !this.isStartZone(x, y)) {
                     // if (!((x <= 3 &&  y == 0) || (y <= 3 && x == 0) || (y == 0 && x < MAP_WIDTH - 3) || (x == 0 && y < MAP_HEIGHT - 3))) {
                         
-                //   if((x >= 3 && x <= MAP_WIDTH-2 ) && (y === 1 || y === MAP_HEIGHT -2)  ) {
-                             if (Math.random() < 0.7) grid[y][x] = EMPTY; // 70% chance
-                //   }   
+                    if (((x >3 && x < MAP_WIDTH - 4 )&& (y === 1 || y === MAP_HEIGHT-2)) || y >1 && y < MAP_HEIGHT -2)
+                             if (Math.random() < 0.7) {
+                                grid[y][x] = EMPTY; // 70% chance
+                             }
+                 
                
 
 
