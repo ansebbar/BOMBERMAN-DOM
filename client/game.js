@@ -34,7 +34,7 @@ const Game = new Component("div", root, () => {
   };
 
   const [gameState, setGameState] = useState({
-    phase: 'prewait',
+    phase: "",
     players: [],
     map: { grid: [], powerUps: [] },
     bombs: [],
@@ -105,6 +105,7 @@ const Game = new Component("div", root, () => {
     ]));
   }
 
+  
   return createElement("div", { class: "gameContainer" }, ...children);
 });
 let lastTime = performance.now();
