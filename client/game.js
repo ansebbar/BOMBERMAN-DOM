@@ -8,12 +8,12 @@ import { LogPage, Map, Player } from "./dom.js"
 import { useState, Component } from "./MiniFramework/app/state.js"
 import { createElement } from './MiniFramework/app/dom.js';
 
-
 const ws = new WebSocket('ws://127.0.0.1:5500');
 var root = document.querySelector("#root")
 
-  var GameHandler 
-  var ClientId = null
+  var GameHandler
+  export var ClientId
+
  const Game = new Component("div", root, () => {
 
     const styles = {
@@ -82,8 +82,15 @@ childs.push(
 
 })
 
-ws.onopen = () => {
-    // ws.send("heelo back")
+ws.onopen = (e) => {
+
+//  const rr = JSON.parse(e)
+//     console.log("cliiiiiiiientID", e);
+//   if (!ClientId){
+//         // ClientId = data.data.ClientId
+        
+//       }
+    
     const ll = LogPage()
 
 
@@ -93,21 +100,16 @@ ws.onmessage = (e) => {
 
     var data
     if (e.data) data = JSON.parse(e.data)
-    console.log(data, "dddddd");
 
-    if (data.signal == "Map") {
-
-        const map = Map(data.data)
-        console.log("mpp", map);
+    if (data.signal == "ClientId") {
+      
+      if (!ClientId){
+        ClientId = data.ClientId
+      }
+      console.log(ClientId , "dfsdfsdf");
     }
-    if (data.signal == "Player") {
 
-        const player = Player(data.data)
-
-    }
     if (data.signal == "Snap") {
-        console.log("snaaaaaaaaaaap");
-        
         GameHandler(data.data)
     }
 

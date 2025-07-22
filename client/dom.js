@@ -1,6 +1,7 @@
 import { Component, useState } from './MiniFramework/app/state.js';
 import { createElement } from './MiniFramework/app/dom.js';
 import { eventManager } from './MiniFramework/app/events.js'
+import { ClientId } from './game.js';
 var root = document.querySelector("#root")
 
 export function LogPage() {
@@ -56,7 +57,7 @@ eventManager.addevent("keydown", (e) => {
     
     if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
         e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) }))
+        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) , ClientId: ClientId }))
          }else if (e.code === "Space") {
         console.log("booooooomb");
 

@@ -4,14 +4,20 @@ const fs = require('fs');
 const path = require('path');
 const GameHandle = require("./Gamestate.js");
 const Player = require("./Player.js");
-const Map = require("./map.js");
+const Mapp = require("./map.js");
 
 class Socket {
   constructor(wsss) {
+    this.clients = new Map()
     this.wss = wsss;
     this.MakeAndConnect(this.wss);
   }
 
+SendToClient(id , data){
+  const cl = this.clients.get(id)
+  
+  if (cl.readyState === WebSocket.OPEN){cl.send(data)}
+}
 SendData(data) {
   this.wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
@@ -22,6 +28,9 @@ SendData(data) {
 
   MakeAndConnect(wss) {
     wss.on("connection", (ws) => {
+      const ClientId =  Math.floor(Date.now() * Math.random()).toFixed()
+      this.clients.set(ClientId , ws)
+      this.SendToClient(ClientId , JSON.stringify({signal:"ClientId" ,ClientId:ClientId }) )
       this.ws = ws;
       gameHandler.ws = this; // Link gameHandler to this socket
 
@@ -31,17 +40,21 @@ SendData(data) {
         switch (data.signal) {
           case "NewUser":
             if (!gameHandler.map){
-
-              gameHandler.map = new Map();
+              // console.log("cllllllllllllllll" , this.wss.clients);
+              
+              gameHandler.map = new Mapp();
             }
-            const pl = new Player(data.name, gameHandler.map , gameHandler.PlayersPos[gameHandler.players.length]);
+            const pl = new Player(data.name, gameHandler.map , gameHandler.PlayersPos[gameHandler.players.length] , ClientId);
             gameHandler.addplayer(pl);
-            console.log("plllllllllll", gameHandler.players, "iddd", gameHandler.id);
+            
+            // console.log("plllllllllll", gameHandler.players, "iddd", gameHandler.id);
             break;
 
           case "PlayerMovement":
             const Direction = JSON.parse(message).Direction;
-            gameHandler.players[0].move(Direction, gameHandler.activeBombs.map(b => b.position));
+           gameHandler.players.find(p => p.id == (JSON.parse(message).ClientId)).move(Direction, gameHandler.activeBombs.map(b => b.position))
+
+            ;
             break;
 
           case "Bomb":

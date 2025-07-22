@@ -1,8 +1,8 @@
 const Bomb = require("./Bomb.js")
 class Player {
-  constructor(name, map , position) {
+  constructor(name, map , position , id) {
     this.name = name
-    this.id = Math.floor(Date.now() * Math.random()).toFixed()
+    this.id = id
     this.position = position
     this.stats = { speed: 5, range: 2, bCount: 1 }
     this.lives = 3

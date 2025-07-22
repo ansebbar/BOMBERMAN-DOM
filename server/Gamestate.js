@@ -18,7 +18,7 @@ class Gamestate {
             3: {x:13 , y: 1}
         }
     }
-
+    
     addplayer(player) {
         if (this.players.length < 4) {
             this.players.push(player)
