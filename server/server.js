@@ -134,7 +134,8 @@ class Socket {
 
             this.SendData(JSON.stringify({
               signal: "ChatMessage",
-              message: (data.message)
+              message: (data.message),
+              username:             gameHandler.players.find(pl => pl.id == data.ClientId).name || "unknown"
             }))
 
       // const mmm = JSON.stringify({

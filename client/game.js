@@ -34,9 +34,6 @@ const Game = new Component("div", root, () => {
   // Set external references
   if (!GameHandler) GameHandler = setGameState;
   gameData = gameState();
-
-
-
   // Render logic
   const children = [];
   if (gameData.phase === "ended") {
@@ -157,7 +154,7 @@ console.log("mmmmmm" , msg);
   if (msg.signal === "ChatMessage") {
     console.log("msgggg" ,  msg);
     
-    chat.handleIncomingMessage(msg.data);
+    chat.handleIncomingMessage(msg);
   }
   if (msg.signal === "ClientId" && !ClientId) {
     ClientId = msg.ClientId;

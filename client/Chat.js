@@ -1,6 +1,7 @@
 import { Component, useState } from './MiniFramework/app/state.js';
 import { createElement } from './MiniFramework/app/dom.js';
 import { eventManager } from './MiniFramework/app/events.js';
+import { ClientId  } from './game.js';
 
 export class Chat {
     constructor(ws) {
@@ -10,6 +11,7 @@ export class Chat {
     }
 
     addMessage(player, message) {
+
         console.log("pll" , player , "msff" , message);
         
         this.messages.push({ player, message });
@@ -22,7 +24,8 @@ export class Chat {
             if (e.key === "Enter" && e.target.value.trim()) {
                 this.ws.send(JSON.stringify({
                     signal: "ChatMessage",
-                    message: e.target.value.trim()
+                    message: e.target.value.trim(),
+                    ClientId:ClientId
                 }));
                 e.target.value = "";
             }
@@ -50,8 +53,8 @@ export class Chat {
     handleIncomingMessage(data) {
         console.log("daaaata" , data);
         
-        if (data.signal === "ChatMessage") {
+        // if (data.signal === "ChatMessage") {
             this.addMessage(data.player, data.message);
-        }
+        
     }
 }
