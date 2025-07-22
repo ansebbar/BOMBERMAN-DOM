@@ -97,7 +97,18 @@ class Socket {
             // console.log(JSON.parse(message));
             break;
 
-
+          case "ChatMessage":
+            // Diffuser le message à tous les joueurs
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({
+                        signal: "ChatMessage",
+                        player: data.name, // Utilisez le nom du joueur
+                        message: data.message
+                    }));
+                }
+            });
+            break;
           case "Bomb":
             if (this.gameHandler.activeBombs.filter(UserBmb => this.gameHandler.players[0].id == UserBmb.ownerId).length < this.gameHandler.players[0].stats.bCount) {
               const bmb = this.gameHandler.players[0].layBomb()

@@ -7,18 +7,19 @@
 import { LogPage, Map, Player } from "./dom.js"
 import { useState, Component } from "./MiniFramework/app/state.js"
 import { createElement } from './MiniFramework/app/dom.js';
-
+import { Chat } from './Chat.js';
 
 const ws = new WebSocket('ws://127.0.0.1:5500');
+const chat = new Chat(ws);
 var root = document.querySelector("#root")
 
   var GameHandler 
  const Game = new Component("div", root, () => {
 
     const styles = {
-        "WALL": "WALL-purple-rock",
-        "BLOCK": "WALL-ice  ",
-        "EMPTY": "ice-rock "
+        "WALL": "WALL-cliff",
+        "BLOCK": "EMPTY ",
+        "EMPTY": "WALL-tech "
     }
 
     const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
@@ -29,8 +30,7 @@ var root = document.querySelector("#root")
     return (
 
     createElement("div", { class: "gameContainer" }, 
-   
-      
+  
             gameState().players.length > 0 &&
       createElement("div", {
         class: "Player",
@@ -40,8 +40,8 @@ var root = document.querySelector("#root")
             ${gameState().players[0].position.y * 60}px
           );
         `
-      }, "pl1"),
-     
+      }, "pl1")
+      ,
     // Map container with grid tiles
     gameState().map?.grid?.length > 0 &&
       createElement("div", { class: "Map_container", style: 'display: grid' }, 
@@ -52,15 +52,10 @@ var root = document.querySelector("#root")
         )
       ),
 
-
-          gameState().bombs.length > 0 && 
-      gameState().bombs.map(bmb =>
-        createElement("div" , {class:"bomb", style:`left:${bmb.position.x*60}px ; top:${bmb.position.y*60}px `}, "bomb")
-      ) , 
+    chat.render()
 
   
 )
-
 
     )
 })
@@ -93,6 +88,9 @@ ws.onmessage = (e) => {
         
         GameHandler(data.data)
     }
+    if (data.signal === "ChatMessage") {
+        chat.handleIncomingMessage(data);
+    }
 
 
 
@@ -118,3 +116,6 @@ window.ws = ws
 // }
 
 // GameLoop()
+
+
+
