@@ -13,6 +13,7 @@ const ws = new WebSocket('ws://127.0.0.1:5500');
 var root = document.querySelector("#root")
 
   var GameHandler 
+  var ClientId = null
  const Game = new Component("div", root, () => {
 
     const styles = {
@@ -21,27 +22,32 @@ var root = document.querySelector("#root")
         "EMPTY": "ice-rock "
     }
 
-    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: []  , timer:0});
+    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: []  , timer:-1});
 
     if (!GameHandler) GameHandler = setGameState
             console.log(gameState() , "staaaaaaaaaaaate");
 
     return (
   createElement("div", { class: "gameContainer" },
+(    gameState().timer >= 0   ? createElement("p" , {class:"timer"}, gameState().timer) : null),
     gameState().phase === "running" &&
     createElement("div", {}, [
 
       // Player
       gameState().players.length > 0 &&
-      createElement("div", {
+        gameState().players.map((pl , index) => 
+        {   
+          return createElement("div", {
         class: "Player",
         style: `
           transform: translate(
-            ${gameState().players[0].position.x * 60}px, 
-            ${gameState().players[0].position.y * 60}px
+            ${pl.position.x * 60}px, 
+            ${pl.position.y * 60}px
           );
         `
-      }, "pl1"),
+      }, `PLayer${index+1}`)}
+        )
+,
 
       // Map Grid
       gameState().map?.grid?.length > 0 &&

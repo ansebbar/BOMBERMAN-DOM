@@ -9,9 +9,14 @@ class Gamestate {
         this.map = null
         this.phase = "waiting"
         this.tick()
-        this.countdown = 10000
-        this.roomTimout = 20000
-        
+        this.countdown = 5000
+        this.roomTimout = 7000
+        this.PlayersPos = {
+            0: { x: 1, y: 1 },
+            1: {x:1 , y: 13},
+            2: {x:13 , y: 13},
+            3: {x:13 , y: 1}
+        }
     }
 
     addplayer(player) {
@@ -26,9 +31,9 @@ class Gamestate {
     }
 
     takeSnapshot() {
-        const Timer = (this.phase === "waiting" && this.roomTimout < 20000 && this.roomTimout > 0) ?
-            this.roomTimout : (this.phase === "waiting" && this.countdown < 10000 && this.countdown > 0)
-                ? this.countdown : null
+        const Timer = (this.phase === "waiting" && this.roomTimout < 7000 && this.roomTimout > 0) ?
+            this.roomTimout : (this.phase === "waiting" && this.countdown < 5000 && this.countdown > 0)
+                ? this.countdown : -1
         const snapShot = { players: this.players, phase: this.phase, bombs: this.activeBombs, map: this.map, timer: Timer }
         // const data = this.phase === 'waiting' ? 'waiting' : "dataat"    
         this.ws.SendData(JSON.stringify({ signal: "Snap", data: snapShot }))
