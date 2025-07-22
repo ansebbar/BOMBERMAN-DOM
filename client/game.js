@@ -1,6 +1,8 @@
 // === Imports ===
 import { LogPage } from "./dom.js"
 import { useState, Component } from "./MiniFramework/app/state.js"
+import { eventManager } from "./MiniFramework/app/events.js"
+
 import { createElement } from './MiniFramework/app/dom.js';
 import { Chat } from "./Chat.js";
 
@@ -15,6 +17,14 @@ export let ClientId;
 let GameHandler = null;
 export let gameData  // live game state for GameLoop
 
+
+eventManager.addevent("keydown", ".NameInput", (e) => {
+  if (e.key == "Enter") {
+    ws.send(JSON.stringify({ signal: "NewUser", name: e.target.value }))
+  }
+})
+
+
 // === Game Component ===
 const Game = new Component("div", root, () => {
   const styles = {
@@ -24,7 +34,7 @@ const Game = new Component("div", root, () => {
   };
 
   const [gameState, setGameState] = useState({
-    phase: 'waiting',
+    phase: 'prewait',
     players: [],
     map: { grid: [], powerUps: [] },
     bombs: [],
@@ -36,19 +46,26 @@ const Game = new Component("div", root, () => {
   gameData = gameState();
   // Render logic
   const children = [];
-  if (gameData.phase === "ended") {
-    children.push(
 
-      createElement("p", { class: "YouWin" }, "You Win")
-    )
-  }
   if (gameData.timer >= 0) {
     children.push(createElement("p", { class: "timer" }, `${Math.ceil(gameData.timer / 1000)}s`));
   }
 
+  if (gameState().phase === "prewait") {
+    children.push(createElement("input"
+      , { type: "text", class: "NameInput", placeholder: "Enter Your Name" }
+    )
+    )
+  }
+
+  if (gameData.phase === "waiting"){
+     children.push(chat.render())  
+  }
+
+
   if (gameData.phase === "running") {
     children.push(createElement("div", {}, [
-    chat.render(),
+   
       // Players
       ...gameData.players.map((pl, index) => {
         const pos = pl.currentPosition || pl.position; // Use interpolated position
@@ -144,16 +161,15 @@ requestAnimationFrame(GameLoop);
 window.ws = ws
 window.gameData = gameData
 ws.onopen = () => {
-  LogPage();
 };
 
 ws.onmessage = (e) => {
   // if (!e.data) return;
   const msg = JSON.parse(e.data);
-console.log("mmmmmm" , msg);
+  console.log("mmmmmm", msg);
   if (msg.signal === "ChatMessage") {
-    console.log("msgggg" ,  msg);
-    
+    console.log("msgggg", msg);
+
     chat.handleIncomingMessage(msg);
   }
   if (msg.signal === "ClientId" && !ClientId) {

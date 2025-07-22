@@ -7,7 +7,7 @@ class Gamestate {
         this.players = []
         this.activeBombs = []
         this.map = null
-        this.phase = "waiting"
+        this.phase = "prewait"
         this.tick()
         this.countdown = 5000
         this.roomTimout = 7000

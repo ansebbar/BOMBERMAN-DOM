@@ -15,7 +15,6 @@ class Socket {
 
   SendToClient(id, data) {
     const cl = this.clients.get(id)
-
     if (cl.readyState === WebSocket.OPEN) { cl.send(data) }
   }
   SendData(data) {
@@ -47,6 +46,7 @@ class Socket {
             }
             const pl = new Player(data.name, gameHandler.map, gameHandler.PlayersPos[gameHandler.players.length], ClientId);
             gameHandler.addplayer(pl);
+            gameHandler.phase = "waiting"
 
             // console.log("plllllllllll", gameHandler.players, "iddd", gameHandler.id);
             break;
@@ -68,32 +68,31 @@ class Socket {
             ) {
               const bmb = currentPlayer.layBomb();
               gameHandler.activeBombs.push(bmb);
-
+              let bombData = [1,1,1,1]
               setTimeout(() => {
                 const Explode = (range) => {
                   for (let i = 1; i <= range; i++) {
                     // Directions: down, up, right, left
-                    if (gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) &&
-                      gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "EMPTY") {
-                      gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y + i)
-                      // gameHandler.map.setCell(bmb.position.x, bmb.position.y + i, "BLOCK");
+                       if (bombData[0] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) &&
+                      ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y+i][bmb.position.x])) {
+                      gameHandler.map.grid[bmb.position.y + i][bmb.position.x] === "WALL" ? bombData[0] = 0:false;
+                      gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y + i) 
                     }
-                    if (gameHandler.map.inMapBound(bmb.position.x, bmb.position.y - i) &&
-                      gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "EMPTY") {
+                    if (bombData[1] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y - i) &&
+                      ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y - i][bmb.position.x])) {
+                      gameHandler.map.grid[bmb.position.y - i][bmb.position.x] === "WALL" ? bombData[1] = 0:false;
+
                       gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y - i)
-
-                      // gameHandler.map.setCell(bmb.position.x, bmb.position.y - i, "BLOCK");
                     }
-                    if (gameHandler.map.inMapBound(bmb.position.x + i, bmb.position.y) &&
-                      gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "EMPTY") {
-                      // gameHandler.map.setCell(bmb.position.x + i, bmb.position.y, "BLOCK");
-                      gameHandler.map.destroyBlock(bmb.position.x + 1, bmb.position.y)
-
+                    if (bombData[2] === 1 && gameHandler.map.inMapBound(bmb.position.x + i, bmb.position.y) &&
+                      ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x + i])) {
+                        gameHandler.map.grid[bmb.position.y][bmb.position.x + i] === "WALL" ? bombData[2] = 0:false; 
+                      gameHandler.map.destroyBlock(bmb.position.x+i, bmb.position.y )
                     }
-                    if (gameHandler.map.inMapBound(bmb.position.x - i, bmb.position.y) &&
-                      gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "EMPTY") {
-                      // gameHandler.map.setCell(bmb.position.x - i, bmb.position.y, "BLOCK");
-                      gameHandler.map.destroyBlock(bmb.position.x - 1, bmb.position.y)
+                    if (bombData[3] === 1 && gameHandler.map.inMapBound(bmb.position.x - i, bmb.position.y) &&
+                      ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x - i])) {
+                        gameHandler.map.grid[bmb.position.y][bmb.position.x - i] === "WALL" ? bombData[3] = 0:false;
+                      gameHandler.map.destroyBlock(bmb.position.x-i, bmb.position.y)
 
                     }
 
@@ -135,7 +134,7 @@ class Socket {
             this.SendData(JSON.stringify({
               signal: "ChatMessage",
               message: (data.message),
-              username:             gameHandler.players.find(pl => pl.id == data.ClientId).name || "unknown"
+              player:    gameHandler.players.find(pl => pl.id == data.ClientId).name || "unknown"
             }))
 
       // const mmm = JSON.stringify({
