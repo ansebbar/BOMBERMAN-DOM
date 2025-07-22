@@ -237,7 +237,7 @@ body {
   height: 60px;
 
   position: absolute;
-  transition: transform 0.3s linear;
+  /* transition: transform 0.3s linear; */
   /* transform: scale(1.44); */
   background-color: rgb(255, 255, 255);
   z-index: 10;

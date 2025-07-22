@@ -1,146 +1,159 @@
-
-// function GameLoop(){
-//     UpdateDom()
-//     requestAnimationFrame(GameLoop)
-// }
-
-import { LogPage, Map, Player } from "./dom.js"
+// === Imports ===
+import { LogPage } from "./dom.js"
 import { useState, Component } from "./MiniFramework/app/state.js"
 import { createElement } from './MiniFramework/app/dom.js';
 
+// === DOM Mount ===
+const root = document.querySelector("#root");
+
+// === WebSocket ===
 const ws = new WebSocket('ws://127.0.0.1:5500');
-var root = document.querySelector("#root")
+export let ClientId;
+let GameHandler = null;
+let gameData = null; // live game state for GameLoop
 
-  var GameHandler
-  export var ClientId
-
- const Game = new Component("div", root, () => {
-
+// === Game Component ===
+const Game = new Component("div", root, () => {
     const styles = {
         "WALL": "WALL-purple-rock",
-        "BLOCK": "WALL-ice  ",
-        "EMPTY": "ice-rock "
+        "BLOCK": "WALL-ice",
+        "EMPTY": "ice-rock"
+    };
+
+    const [gameState, setGameState] = useState({
+        phase: 'waiting',
+        players: [],
+        map: { grid: [], powerUps: [] },
+        bombs: [],
+        timer: -1
+    });
+
+    // Set external references
+    if (!GameHandler) GameHandler = setGameState;
+    gameData = gameState();
+
+    // Render logic
+    const children = [];
+
+    if (gameData.timer >= 0) {
+        children.push(createElement("p", { class: "timer" }, `${Math.ceil(gameData.timer / 1000)}s`));
     }
 
-    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: []  , timer:-1});
+    if (gameData.phase === "running") {
+        children.push(createElement("div", {}, [
 
-    if (!GameHandler) GameHandler = setGameState
-            console.log(gameState() , "staaaaaaaaaaaate");
+            // Players
+            ...gameData.players.map((pl, index) => {
+                const pos = pl.currentPosition || pl.position; // Use interpolated position
+                return createElement("div", {
+                    class: "Player",
+                    style: `
+                        transform: translate(${pos.x * 60}px, ${pos.y * 60}px);
+                        transition: none;
+                    `
+                }, `Player${index + 1}`);
+            }),
 
+            // Map
+            createElement("div", { class: "Map_container", style: 'display: grid' },
+                gameData.map.grid?.flatMap(line =>
+                    line.map(block =>
+                        createElement("div", { class: `tile ${styles[block]}` })
+                    )
+                )
+            ),
 
-    const childs = []
+            // Bombs
+            ...gameData.bombs.map(bmb =>
+                createElement("div", {
+                    class: "bomb",
+                    style: `left:${bmb.position.x * 60}px; top:${bmb.position.y * 60}px`
+                }, "bomb")
+            ),
 
-
-    if (gameState().timer >= 0){
-      childs.push( createElement("p" , {class:"timer"},`${Math.ceil( gameState().timer/1000)}s`))
+            // PowerUps
+            ...(gameData.map.powerUps ?? []).map(pwr =>
+                createElement("div", {
+                    class: "powerUp",
+                    style: `left:${pwr.position.x * 60}px; top:${pwr.position.y * 60}px`
+                }, "powerUp")
+            )
+        ]));
     }
-    if (gameState().phase === "running"){
-childs.push(
-   createElement("div", {}, [
 
-      // Player
-      gameState().players.length > 0 &&
-        gameState().players.map((pl , index) => 
-        {   
-          return createElement("div", {
-        class: "Player",
-        style: `
-          transform: translate(
-            ${pl.position.x * 60}px, 
-            ${pl.position.y * 60}px
-          );
-        `
-      }, `PLayer${index+1}`)}
-        )
-,
+    return createElement("div", { class: "gameContainer" }, ...children);
+});
+let lastTime = performance.now();
 
-      // Map Grid
-      gameState().map?.grid?.length > 0 &&
-      createElement("div", { class: "Map_container", style: 'display: grid' },
-        gameState().map.grid.flatMap(line =>
-          line.map(block =>
-            createElement("div", { class: `tile ${styles[block]}` })
-          )
-        )
-      ),
+function GameLoop(now) {
+    const delta = now - lastTime;
+    lastTime = now;
 
-      // Bombs
-      gameState().bombs.length > 0 &&
-      gameState().bombs.map(bmb =>
-        createElement("div", {
-          class: "bomb",
-          style: `left:${bmb.position.x * 60}px; top:${bmb.position.y * 60}px`
-        }, "bomb")
-      ) , 
+    if (gameData?.phase === "running") {
+        // 🕒 Timer update
+        if (gameData.timer > 0) {
+            GameHandler(prev => ({
+                ...prev,
+                timer: Math.max(0, prev.timer - delta)
+            }));
+        }
 
+        // 🎮 Smooth Player Movement (interpolation)
+        const updatedPlayers = gameData.players.map(pl => {
+            const current = pl.currentPosition || pl.position;
+            const target = pl.position;
 
-          (gameState()?.map?.powerUps?.length > 0 ) && 
+            const dx = target.x - current.x;
+            const dy = target.y - current.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-          gameState().map.powerUps.map(pwr =>   createElement("div", {
-          class: "powerUp",
-          style: `left:${pwr.position.x * 60}px; top:${pwr.position.y * 60}px`
-        }, "powerUp"))
-      
-    
+            const speed = pl.stats.speed * delta / 1000;
 
-    ])
-)
+            if (dist < 0.01) {
+                return { ...pl, currentPosition: target };
+            }
+
+            const ratio = Math.min(1, speed / dist);
+
+            return {
+                ...pl,
+                currentPosition: {
+                    x: current.x + dx * ratio,
+                    y: current.y + dy * ratio
+                }
+            };
+        });
+
+        GameHandler(prev => ({
+            ...prev,
+            players: updatedPlayers
+        }));
     }
-    return (
-  createElement("div", { class: "gameContainer" },
 
-...childs
-  )
-)
-
-})
-
-ws.onopen = (e) => {
-
-    
-    const ll = LogPage()
-
-
+    requestAnimationFrame(GameLoop);
 }
+requestAnimationFrame(GameLoop);
+
+window.ws = ws
+ws.onopen = () => {
+    LogPage(); // you may trigger initial login or UI here
+};
 
 ws.onmessage = (e) => {
+    if (!e.data) return;
+    const msg = JSON.parse(e.data);
 
-    var data
-    if (e.data) data = JSON.parse(e.data)
-
-    if (data.signal == "ClientId") {
-      
-      if (!ClientId){
-        ClientId = data.ClientId
-      }
-      console.log(ClientId , "dfsdfsdf");
+    if (msg.signal === "ClientId" && !ClientId) {
+        ClientId = msg.ClientId;
+        console.log("ClientId:", ClientId);
     }
 
-    if (data.signal == "Snap") {
-        GameHandler(data.data)
+    if (msg.signal === "Snap") {
+        // Update state with latest snapshot from server
+        GameHandler(msg.data);
     }
-
-
-
-}
+};
 
 ws.onclose = (e) => {
-    console.log("clooose");
-
-    console.log("recieved msg : ", e.data);
-
-}
-window.ws = ws
-
-
-
-
-
-
-// function GameLoop() {   
-   
-//     requestAnimationFrame(GameLoop)
-
-// }
-
-// GameLoop()
+    console.log("WebSocket closed", e.data);
+};
