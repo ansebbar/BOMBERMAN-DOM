@@ -21,17 +21,18 @@ var root = document.querySelector("#root")
         "EMPTY": "ice-rock "
     }
 
-    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: [] });
+    const [gameState, setGameState] = useState({ phase: 'waiting', players: [], map: [], bombs: []  , timer:0});
 
     if (!GameHandler) GameHandler = setGameState
             console.log(gameState() , "staaaaaaaaaaaate");
 
     return (
+  createElement("div", { class: "gameContainer" },
+    gameState().phase === "running" &&
+    createElement("div", {}, [
 
-    createElement("div", { class: "gameContainer" }, 
-   
-      
-            gameState().players.length > 0 &&
+      // Player
+      gameState().players.length > 0 &&
       createElement("div", {
         class: "Player",
         style: `
@@ -41,10 +42,10 @@ var root = document.querySelector("#root")
           );
         `
       }, "pl1"),
-     
-    // Map container with grid tiles
-    gameState().map?.grid?.length > 0 &&
-      createElement("div", { class: "Map_container", style: 'display: grid' }, 
+
+      // Map Grid
+      gameState().map?.grid?.length > 0 &&
+      createElement("div", { class: "Map_container", style: 'display: grid' },
         gameState().map.grid.flatMap(line =>
           line.map(block =>
             createElement("div", { class: `tile ${styles[block]}` })
@@ -52,17 +53,18 @@ var root = document.querySelector("#root")
         )
       ),
 
-
-          gameState().bombs.length > 0 && 
+      // Bombs
+      gameState().bombs.length > 0 &&
       gameState().bombs.map(bmb =>
-        createElement("div" , {class:"bomb", style:`left:${bmb.position.x*60}px ; top:${bmb.position.y*60}px `}, "bomb")
-      ) , 
-
-  
+        createElement("div", {
+          class: "bomb",
+          style: `left:${bmb.position.x * 60}px; top:${bmb.position.y * 60}px`
+        }, "bomb")
+      )
+    ])
+  )
 )
 
-
-    )
 })
 
 ws.onopen = () => {

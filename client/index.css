@@ -210,6 +210,10 @@ body {
   image-rendering: pixelated;
 }
 
+.timer{
+  font-size: 30px;
+  color: teal;
+}
 
 /* Plaayer styling */
 
