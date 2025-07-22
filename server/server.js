@@ -151,6 +151,32 @@ class Socket {
   }
 }
 
+// === Static File Server ===
+const staticServer = http.createServer((req, res) => {
+  let filePath = req.url === '/' ? '/client/index.html' : `/client${req.url}`;
+  const resolvedPath = path.join(__dirname, '..', filePath);
+
+  fs.readFile(resolvedPath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      res.end('404 Not Found');
+      return;
+    }
+    // Basic content-type handling
+    let ext = path.extname(filePath);
+    let type = 'text/html';
+    if (ext === '.css') type = 'text/css';
+    if (ext === '.js') type = 'application/javascript';
+    if (ext === '.png') type = 'image/png';
+    res.writeHead(200, { 'Content-Type': type });
+    res.end(data);
+  });
+});
+
+staticServer.listen(5501, () => {
+  console.log('Static server running at http://localhost:5501');
+});
+
 // === Initialize server properly ===
 const wss = new WebSocket.Server({ port: 5500 });
 var gameHandler = new GameHandle(null);   // Create the global Gamestate instance
