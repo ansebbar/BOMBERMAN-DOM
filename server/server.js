@@ -15,7 +15,7 @@ class Socket {
 
   SendToClient(id, data) {
     const cl = this.clients.get(id)
-    if (cl.readyState === WebSocket.OPEN) { cl.send(data) }
+    if (cl?.readyState === WebSocket.OPEN) { cl.send(data) }
   }
   SendData(data) {
     this.wss.clients.forEach(client => {
@@ -50,20 +50,23 @@ class Socket {
 
           case "PlayerMovement":
             const Direction = JSON.parse(message).Direction;
-            gameHandler.players.find(p => p.id == (JSON.parse(message).ClientId)).move(Direction, gameHandler.activeBombs.map(b => b.position));
+            gameHandler.players.find(p => p.id == (JSON.parse(message).ClientId))?.move(Direction, gameHandler.activeBombs?.map(b => b.position));
             break;
 
           case "Bomb":
             const currentPlayer = gameHandler.players.find(p => p.id == (JSON.parse(message).ClientId))
-
+            if (!currentPlayer) {
+              break
+            }
             if (
               gameHandler.activeBombs.filter(
                 b => currentPlayer.id == b.ownerId
               ).length < currentPlayer.stats.bCount
             ) {
-              const bmb = currentPlayer.layBomb();
+              const bmb = currentPlayer?.layBomb();
               gameHandler.activeBombs.push(bmb);
               let bombData = [1, 1, 1, 1]
+
               setTimeout(() => {
                 const Explode = (range) => {
                   for (let i = 1; i <= range; i++) {
@@ -100,10 +103,17 @@ class Socket {
                         (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y - i)
                       ) {
                         pl.lives -= 1;
-                        if (pl.lives === 0) { gameHandler.removeplayer(pl.id) }
+                        console.log(this.clients , this.clients.keys());
+
+                        if (pl.lives === 0) {
+                          console.log(pl.lives);
+
+                          this.SendToClient(pl.id, JSON.stringify({ signal: "YouLost" , data: pl}))
+                          gameHandler.removeplayer(pl.id) 
+                        }
                       }
 
-                      console.log("liiiifes", pl.lives);
+                      // console.log("liiiifes", pl.lives);
                     });
                   }
                 };

@@ -5,21 +5,6 @@ import { ClientId , gameData } from './game.js';
 var root = document.querySelector("#root")
 
 
-eventManager.addevent("keydown", (e) => {
-    console.log("keeey", e.key);
-    if (gameData.phase !== "ended"){
-
-    if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) , ClientId: ClientId }))
-         }else if (e.code === "Space") {
-        console.log("booooooomb");
-
-        ws.send(JSON.stringify({ signal: "Bomb" , ClientId: ClientId}))
-    }
-    }
-
-})
 
 export function LogPage() {
     console.log("rooot", root);

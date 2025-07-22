@@ -301,3 +301,10 @@ body {
     border-radius: 3px;
     font-size: 12px;
 }
+
+
+.dead{
+  font-size: 150px;
+  background-color: aqua;
+  z-index: 1111;
+}

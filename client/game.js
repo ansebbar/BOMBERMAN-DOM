@@ -14,9 +14,15 @@ const ws = new WebSocket('ws://127.0.0.1:5500');
 const chat = new Chat(ws);
 var PlayerState
 var enableChat
+var IsPLayer
 export let ClientId;
 let GameHandler = null;
 export let gameData  // live game state for GameLoop
+
+
+
+
+
 
 
 eventManager.addevent("keydown", ".NameInput", (e) => {
@@ -34,7 +40,7 @@ const Game = new Component("div", root, () => {
     "EMPTY": "ice-rock"
   };
   const [PlayerStat , SetPlayerState] = useState("alive")
-  if (!PlayerStat)SetPlayerState
+if (!PlayerState) PlayerState = SetPlayerState;
   const [chatView, SetChatView] = useState(false)
   const [gameState, setGameState] = useState({
     phase: "",
@@ -43,12 +49,26 @@ const Game = new Component("div", root, () => {
     bombs: [],
     timer: -1
   });
+  IsPLayer = chatView()
+  if (!GameHandler) GameHandler = setGameState;
+//    if (PlayerStat() === "dead") {
+//       console.log({"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh":h});
+      
+//       return
+//     }
 
+//     if((!gameState().players.some(pl => pl.id == ClientId )) && gameState().phase == "running"){
+      
+// SetPlayerState("dead")
+//     }
+
+   
+  
+  
   if (!enableChat) {
     enableChat = SetChatView
   }
   // Set external references
-  if (!GameHandler) GameHandler = setGameState;
   gameData = gameState();
   const children = [];
   if (chatView()) children.push(chat.render())
@@ -63,7 +83,12 @@ const Game = new Component("div", root, () => {
     )
   }
 
-
+if(PlayerStat() != "alive") {
+   return createElement("div", { class: "gameContainer" }, 
+createElement("div", {class:"dead"}, "YOU LOST")
+   );
+  
+}
 
   if (gameData.phase === "running") {
     children.push(createElement("div", {}, [
@@ -168,7 +193,7 @@ ws.onopen = () => {
 ws.onmessage = (e) => {
   // if (!e.data) return;
   const msg = JSON.parse(e.data);
-  console.log("mmmmmm", msg);
+  // console.log("mmmmmm", msg);
   if (msg.signal === "ChatMessage") {
     console.log("msgggg", msg);
 
@@ -187,8 +212,28 @@ ws.onmessage = (e) => {
     enableChat(true)
   }
 
+  if(msg.signal === "YouLost"){
+    console.log({"msg": msg.signal});
+    console.log({"my pl": msg.data});
+      PlayerState("dead");
+  }
+
 };
 
 ws.onclose = (e) => {
   console.log("WebSocket closed", e.data);
 };
+eventManager.addevent("keydown", (e) => {
+
+    if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
+        e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) , ClientId: ClientId }))
+         }else if (e.code === "Space") {
+
+        ws.send(JSON.stringify({ signal: "Bomb" , ClientId: ClientId}))
+    }
+ 
+
+    
+
+})
