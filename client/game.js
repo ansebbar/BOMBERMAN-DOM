@@ -124,10 +124,9 @@ if (gameState().phase === "waiting" && !chatView()) {
 
       gameData.players.map((pl, index) => {
         const pos = pl.currentPosition || pl.position;
-        const directionClass = getDirectionClass(pl.direction); // Assign movement class
 
         return createElement("div", {
-          class: `Player ${directionClass}`,  // Apply direction class for animation
+          class: `Player`,  
           style: `transform: translate(${pos.x * 60}px, ${pos.y * 60}px);`  // Move player based on position
         }, `Player${index + 1}`);
       }),
@@ -150,14 +149,15 @@ if (gameState().phase === "waiting" && !chatView()) {
       ),
 
       // PowerUps
-      ...(gameData.map.powerUps ?? []).map(pwr =>
-        createElement("div", {
+ ...(gameData.map.powerUps ?? []).map(pwr => {
+  const powerUpClass = `powerUp ${pwr.type}`; // Dynamically assign class for styling
 
+  return createElement("div", {
+    class: powerUpClass,
+    style: `left:${pwr.position.x * 60}px; top:${pwr.position.y * 60}px`
+  }, `${pwr.type[0].toUpperCase() + pwr.type.slice(1)}`);  // Optional: display type
+})
 
-          class: "powerUp",
-          style: `left:${pwr.position.x * 60}px; top:${pwr.position.y * 60}px`
-        }, "powerUp")
-      )
     ]));
   }
 

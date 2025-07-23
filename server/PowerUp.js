@@ -1,7 +1,7 @@
 const POWERUP_TYPES = {
   SPEED: 'speed',
   RANGE: 'range', 
-  BOMB: 'bomb'
+  BOMB: 'bombCount'
 };
 
 class PowerUp {
