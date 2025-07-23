@@ -116,16 +116,15 @@ createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.l
         ,
       
        
-      ...gameData.players.map((pl, index) => {
-        const pos = pl.currentPosition || pl.position; // Use interpolated position
-        return createElement("div", {
-          class: "Player",
-          style: `
-                        transform: translate(${pos.x * 60}px, ${pos.y * 60}px);
-                        transition: none;
-                    `
-        }, `Player${index + 1}`);
-      }),
+   gameData.players.map((pl, index) => {
+  const pos = pl.currentPosition || pl.position; 
+  const directionClass = getDirectionClass(pl.direction); // Assign movement class
+
+  return createElement("div", {
+    class: `Player ${directionClass}`,  // Apply direction class for animation
+    style: `transform: translate(${pos.x * 60}px, ${pos.y * 60}px);`  // Move player based on position
+  }, `Player${index + 1}`);
+}),
 
       // Map
       createElement("div", { class: "Map_container", style: 'display: grid' },
@@ -158,6 +157,7 @@ createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.l
 
   return createElement("div", { class: "gameContainer" }, ...children );
 });
+
 let lastTime = performance.now();
 
 function GameLoop(now) {
@@ -190,15 +190,21 @@ function GameLoop(now) {
 
       const ratio = Math.min(1, speed / dist);
 
+      // Update direction class based on the player's current movement direction
+      const directionClass = getDirectionClass(pl.direction);
+
+      // Update player's position
       return {
         ...pl,
         currentPosition: {
           x: current.x + dx * ratio,
           y: current.y + dy * ratio
-        }
+        },
+        directionClass,  // Store the current direction class for animation
       };
     });
 
+    // Apply the updated player state
     GameHandler(prev => ({
       ...prev,
       players: updatedPlayers
@@ -207,7 +213,10 @@ function GameLoop(now) {
 
   requestAnimationFrame(GameLoop);
 }
+
 requestAnimationFrame(GameLoop);
+
+
 
 window.ws = ws
 window.gameData = gameData
@@ -269,3 +278,14 @@ eventManager.addevent("keydown", (e) => {
     
 
 })
+
+
+function getDirectionClass(direction) {
+  switch (direction) {
+    case 'down': return 'WalkDown';
+    case 'up': return 'WalkUp';
+    case 'left': return 'WalkLeft';
+    case 'right': return 'WalkRight';
+    default: return ''; // idle
+  }
+}

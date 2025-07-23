@@ -207,3 +207,4 @@ const wss = new WebSocket.Server({ port: 5500 });
 var gameHandler = new GameHandle(null);   // Create the global Gamestate instance
 const ws = new Socket(wss);               // Create WebSocket manager
 gameHandler.ws = ws;                      // Link Gamestate to the WebSocket manager
+

@@ -235,16 +235,65 @@ body {
 
 /* Plaayer styling */
 
+/* Base Player Style */
 .Player {
   width: 60px;
   height: 60px;
-
   position: absolute;
-  /* transition: transform 0.3s linear; */
-  /* transform: scale(1.44); */
-  background-color: rgb(255, 255, 255);
+  background-image: url('CHAAR.png'); /* Ensure this is the correct path */
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
   z-index: 10;
+  transition: transform 0.2s ease-in-out; /* Optional, for smooth movement */
 }
+
+/* Player movement directions */
+.WalkDown {
+  animation: walkDown 0.4s steps(3) infinite;
+  background-position-y: 0px;
+}
+
+.WalkLeft {
+  animation: walkLeft 0.4s steps(3) infinite;
+  background-position-y: -60px;
+}
+
+.WalkRight {
+  animation: walkRight 0.4s steps(3) infinite;
+  background-position-y: -120px;
+}
+
+.WalkUp {
+  animation: walkUp 0.4s steps(3) infinite;
+  background-position-y: -180px;
+}
+
+/* All keyframes just scroll horizontally through frames */
+@keyframes walkDown {
+  from { background-position-x: 0px; }
+  to { background-position-x: -180px; }
+}
+
+@keyframes walkLeft {
+  from { background-position-x: 0px; }
+  to { background-position-x: -180px; }
+}
+
+@keyframes walkRight {
+  from { background-position-x: 0px; }
+  to { background-position-x: -180px; }
+}
+
+@keyframes walkUp {
+  from { background-position-x: 0px; }
+  to { background-position-x: -180px; }
+}
+.IdleDown    { background-position: -60px 0px; }
+.IdleLeft    { background-position: -60px -60px; }
+.IdleRight   { background-position: -60px -120px; }
+.IdleUp      { background-position: -60px -180px; }
+
+
 .YouWin{
   font-size: 50px;
   color: rgb(255, 255, 255);
