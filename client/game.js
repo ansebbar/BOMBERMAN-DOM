@@ -7,7 +7,7 @@ import { createElement } from './MiniFramework/app/dom.js';
 import { Chat } from "./Chat.js";
 
 // === DOM Mount ===
-const root = document.querySelector("#root");
+const root = document.body
 
 // === WebSocket ===
 const ws = new WebSocket('ws://127.0.0.1:5500');
@@ -25,7 +25,7 @@ export let gameData  // live game state for GameLoop
 
 
 
-eventManager.addevent("keydown", ".NameInput", (e) => {
+eventManager.addevent("keyup", ".NameInput", (e) => {
   if (e.key == "Enter") {
     ws.send(JSON.stringify({ signal: "NewUser", name: e.target.value }))
   }
@@ -39,8 +39,8 @@ const Game = new Component("div", root, () => {
     "BLOCK": "WALL-ice",
     "EMPTY": "ice-rock"
   };
-  const [PlayerStat , SetPlayerState] = useState("alive")
-if (!PlayerState) PlayerState = SetPlayerState;
+  const [PlayerStat, SetPlayerState] = useState("alive")
+  if (!PlayerState) PlayerState = SetPlayerState;
   const [chatView, SetChatView] = useState(false)
   const [gameState, setGameState] = useState({
     phase: "",
@@ -52,7 +52,7 @@ if (!PlayerState) PlayerState = SetPlayerState;
   IsPLayer = chatView()
   if (!GameHandler) GameHandler = setGameState;
 
-  
+
   if (!enableChat) {
     enableChat = SetChatView
   }
@@ -66,65 +66,71 @@ if (!PlayerState) PlayerState = SetPlayerState;
     children.push(createElement("p", { class: "timer" }, `${Math.ceil(gameData.timer / 1000)}s`));
   }
 
-  if (gameState().phase === "waiting" && !chatView()) {
-    children.push(
-      createElement("input"
-      , { type: "text", class: "NameInput", placeholder: "Enter Your Name" }
-    )
-  ,createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`)   )
-  }
 
-if(PlayerStat() != "alive") {
-   return createElement("div", { class: "gameContainer" }, 
-createElement("div", {class:"dead"}, "YOU LOST")
-   );
-  
+if (gameState().phase === "spectating") {
+    return createElement("div", { class: "spectator-message" }, 
+        gameState().message || "Game in progress. Please wait..."
+    );
 }
 
+if (gameState().phase === "waiting" && !chatView()) {
+    children.push(
+        createElement("input", { type: "text", class: "NameInput", placeholder: "Enter Your Name" }),
+        createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`)
+    );
+}
+
+  if (PlayerStat() != "alive" && PlayerStat() != "winner") {
+    return createElement("div", { class: "GameOVER" },
+    );
+  }
+  if (PlayerStat() === "winner") {
+    return createElement("div", { class: "YouWin" })
+  }
   if (gameData.phase === "running") {
-          const currentPlayer = gameData.players.find(pl => pl.id === ClientId);
+    const currentPlayer = gameData?.players.find(pl => pl.id === ClientId);
     
     children.push(createElement("div", {}, [
 
-,
-createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`)
-,
+      ,
+      createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.length}`)
+      ,
 
-     createElement("div" , {class:"Nav"}, [// Players
-      createElement("div", { class: "PlayerName" }, currentPlayer.name),
-      currentPlayer.lives > 0 ? 
-        createElement("div", {
-          class: "PlayerLives",
-          style: `left: 0px; top: 0px;`
-        }, `❤️ x${currentPlayer.lives}`) : null,
-      currentPlayer.stats.bCount > 0 ?
-        createElement("div", {
-          class: "PlayerBombs",
-          style: `left: 0px; top: 20px;`
-        }, `💣 x${currentPlayer.stats.bCount}`)  : null,
-      currentPlayer.stats.speed > 0 ?
-        createElement("div", {
-          class: "PlayerSpeed",
-          style: `left: 0px; top: 40px;`
-        }, `⚡ x${currentPlayer.stats.speed}`) : null,
-      currentPlayer.stats.range > 0 ?
-        createElement("div", {
-          class: "PlayerRange",
-          style: `left: 0px; top: 60px;`
-        }, `📏 x${currentPlayer.stats.range}`) : null]
-        ) 
-        ,
-      
-       
-   gameData.players.map((pl, index) => {
-  const pos = pl.currentPosition || pl.position; 
-  const directionClass = getDirectionClass(pl.direction); // Assign movement class
+      createElement("div", { class: "Nav" }, [// Players
+        createElement("div", { class: "PlayerName" }, currentPlayer?.name),
+        currentPlayer?.lives > 0 ?
+          createElement("div", {
+            class: "PlayerLives",
+            style: `left: 0px; top: 0px;`
+          }, `❤️ x${currentPlayer?.lives}`) : null,
+        currentPlayer?.stats.bCount > 0 ?
+          createElement("div", {
+            class: "PlayerBombs",
+            style: `left: 0px; top: 20px;`
+          }, `💣 x${currentPlayer?.stats.bCount}`) : null,
+        currentPlayer?.stats.speed > 0 ?
+          createElement("div", {
+            class: "PlayerSpeed",
+            style: `left: 0px; top: 40px;`
+          }, `⚡ x${currentPlayer?.stats.speed}`) : null,
+        currentPlayer?.stats.range > 0 ?
+          createElement("div", {
+            class: "PlayerRange",
+            style: `left: 0px; top: 60px;`
+          }, `📏 x${currentPlayer?.stats.range}`) : null]
+      )
+      ,
 
-  return createElement("div", {
-    class: `Player ${directionClass}`,  // Apply direction class for animation
-    style: `transform: translate(${pos.x * 60}px, ${pos.y * 60}px);`  // Move player based on position
-  }, `Player${index + 1}`);
-}),
+
+      gameData.players.map((pl, index) => {
+        const pos = pl.currentPosition || pl.position;
+        const directionClass = getDirectionClass(pl.direction); // Assign movement class
+
+        return createElement("div", {
+          class: `Player ${directionClass}`,  // Apply direction class for animation
+          style: `transform: translate(${pos.x * 60}px, ${pos.y * 60}px);`  // Move player based on position
+        }, `Player${index + 1}`);
+      }),
 
       // Map
       createElement("div", { class: "Map_container", style: 'display: grid' },
@@ -140,12 +146,14 @@ createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.l
         createElement("div", {
           class: "bomb",
           style: `left:${bmb.position.x * 60}px; top:${bmb.position.y * 60}px`
-        }, "bomb")
+        })
       ),
 
       // PowerUps
       ...(gameData.map.powerUps ?? []).map(pwr =>
         createElement("div", {
+
+
           class: "powerUp",
           style: `left:${pwr.position.x * 60}px; top:${pwr.position.y * 60}px`
         }, "powerUp")
@@ -153,9 +161,9 @@ createElement("div", { class: "PlayerCount" }, `Players: ${gameState().players.l
     ]));
   }
 
-  
 
-  return createElement("div", { class: "gameContainer" }, ...children );
+
+  return createElement("div", { class: "gameContainer" }, ...children);
 });
 
 let lastTime = performance.now();
@@ -224,60 +232,105 @@ ws.onopen = () => {
 };
 
 ws.onmessage = (e) => {
-  // if (!e.data) return;
-  const msg = JSON.parse(e.data);
-  // console.log("mmmmmm", msg);
-  if (msg.signal === "ChatMessage") {
-    console.log("msgggg", msg);
+    const msg = JSON.parse(e.data);
+    
+    if (msg.signal === "GameInProgress") {
+        // Show spectator view or waiting message
+        GameHandler({
+            phase: "spectating",
+            players: [],
+            map: { grid: [], powerUps: [] },
+            bombs: [],
+            timer: -1,
+            message: msg.message
+        });
+        return;
+    }
+    
+    if (msg.signal === "ChatMessage") {
+        chat.handleIncomingMessage(msg);
+    }
+    
+    if (msg.signal === "ClientId" && !ClientId) {
+        ClientId = msg.ClientId;
+    }
+    
+    if (msg.signal === "Snap") {
+        GameHandler(msg.data);
+    }
+    
+    if (msg.signal === "PlayerDisconnected") {
+        const playerId = msg.data;
+        GameHandler(prev => ({
+            ...prev,
+            players: prev.players.filter(pl => pl.id !== playerId)
+        }));
+    }
+    
+    if (msg.signal === "enableChat") {
+        enableChat(true);
+    }
+    
+    if (msg.signal === "YouLost") {
+        PlayerState("dead");
+    }
+    
+    if (msg.signal === "GameOver") {
+        PlayerState("winner");
+        // Reset to waiting state after showing winner
+        setTimeout(() => {
+            PlayerState("alive");
+            enableChat(false);
+            GameHandler({
+                phase: "waiting",
+                players: [],
+                map: { grid: [], powerUps: [] },
+                bombs: [],
+                timer: -1
+            });
 
-    chat.handleIncomingMessage(msg);
-  }
-  if (msg.signal === "ClientId" && !ClientId) {
-    ClientId = msg.ClientId;
-    console.log("ClientId:", ClientId);
-  }
 
-  if (msg.signal === "Snap") {
-    GameHandler(msg.data);
-  }
+        }, 3000);
 
-  if (msg.signal === "enableChat") {
-    enableChat(true)
-  }
-  if (msg.signal == "PlayerDisconnected") {
-    const playerId = msg.data;
-    console.log("Player disconnected:", playerId);
-    GameHandler(prev => ({
-      ...prev,
-      players: prev.players.filter(pl => pl.id !== playerId)
-    }));
-  }
-
-  if(msg.signal === "YouLost"){
-    console.log({"msg": msg.signal});
-    console.log({"my pl": msg.data});
-      PlayerState("dead");
-  }
-
+        // window.location.reload(); // Reload the page to reset the game
+    }
 };
 
 ws.onclose = (e) => {
   console.log("WebSocket closed", e.data);
+  
+  // Reset client state to initial
+  ClientId = null;
+  PlayerState("alive");
+  enableChat(false);
+  GameHandler({ 
+    phase: "waiting",
+    players: [],
+    map: { grid: [], powerUps: [] },
+    bombs: [],
+    timer: -1
+  });
+  
+  // Attempt to reconnect after a short delay
+  setTimeout(() => {
+    // window.location.reload(); // Simple approach - reload the page
+    // Or implement manual reconnection:
+    // const newWs = new WebSocket('ws://127.0.0.1:5500');
+    // // Setup event handlers again...
+  }, 1000);
 };
-eventManager.addevent("keydown", (e) => {
+eventManager.addevent("keyup", (e) => {
 
-    if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
-        e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5) , ClientId: ClientId }))
-         }else if (e.code === "Space") {
+  if (e.key === "ArrowUp" || e.key === "ArrowDown" ||
+    e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    ws.send(JSON.stringify({ signal: "PlayerMovement", Direction: e.key.slice(5), ClientId: ClientId }))
+  } else if (e.code === "Space") {
 
-        ws.send(JSON.stringify({ signal: "Bomb" , ClientId: ClientId}))
-    }
- 
-
-    
-
+    ws.send(JSON.stringify({ signal: "Bomb", ClientId: ClientId }))
+  }
 })
+
+
 
 
 function getDirectionClass(direction) {

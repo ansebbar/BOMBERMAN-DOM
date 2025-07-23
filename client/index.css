@@ -225,6 +225,48 @@ body {
   height: 60px;
   background-color: rgb(136, 255, 0);
   z-index: 10;
+  font-size: 12px;
+
+  
+}
+.GameOVER {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Centers it properly */
+  image-rendering: pixelated;
+  background-blend-mode: multiply;
+  width: 30vw;
+  height: 30vh;
+  background: url('gameOver.gif') center/cover no-repeat;
+}
+
+.YouWin{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); 
+  image-rendering: pixelated;
+  background-blend-mode: multiply;
+  width: 30vw;
+  height: 30vh;
+  background: url('YouWIn.jpg') center/cover no-repeat;
+}
+.bomb{
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  z-index: 9;
+
+  background-color: transparent;  
+      image-rendering: pixelated;
+
+      background: url('bomb.png') center/cover no-repeat ;
+      animation: bomb 0.5s ease-in-out infinite;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+
 }
 
 .range {}
@@ -303,15 +345,6 @@ body {
 
 /* bomb */
 
-.bomb {
-  position: fixed;
-
-  width: 60px;
-  height: 60px;
-  background-color: red;
-  z-index: 9;
-
-}
 
 /* Chat Styles */
 .chat-container {
@@ -326,6 +359,13 @@ body {
     color: white;
     font-family: Arial, sans-serif;
     font-size: 12px;
+}
+
+@keyframes bomb {
+  
+  50%{
+     scale: 1.4;
+  }
 }
 
 .messages {
@@ -390,6 +430,9 @@ body {
 }
 
 body{
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
   color: white;
 }
 

@@ -34,18 +34,27 @@ class Socket {
       this.ws = ws;
       gameHandler.ws = this; // Link gameHandler to this socket
 
-      this.ws.on("message", (message) => {
+        this.ws.on("message", (message) => {
         const data = JSON.parse(message);
 
         switch (data.signal) {
           case "NewUser":
+            // Check if game is running - reject new players
+            if (gameHandler.phase === "running") {
+              this.SendToClient(ClientId, JSON.stringify({
+                signal: "GameInProgress",
+                message: "Game is currently running. Please wait for the next round."
+              }));
+              return;
+            }
+
             if (!gameHandler.map) {
               gameHandler.map = new Mapp();
             }
             const pl = new Player(data.name, gameHandler.map, gameHandler.PlayersPos[gameHandler.players.length], ClientId);
             gameHandler.addplayer(pl);
-            gameHandler.phase = "waiting"
-            this.SendToClient(ClientId, JSON.stringify({ signal: "enableChat" }))
+            gameHandler.phase = "waiting";
+            this.SendToClient(ClientId, JSON.stringify({ signal: "enableChat" }));
             break;
 
           case "PlayerMovement":
@@ -72,18 +81,18 @@ class Socket {
                   for (let i = 1; i <= range && i <= 3; i++) {
                     if (bombData[0] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y + i) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y + i][bmb.position.x])) {
-                      bombData[0] = 0 ;
+                      bombData[0] = 0;
                       gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y + i)
                     }
                     if (bombData[1] === 1 && gameHandler.map.inMapBound(bmb.position.x, bmb.position.y - i) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y - i][bmb.position.x])) {
-                      bombData[1] = 0 ;
+                      bombData[1] = 0;
 
                       gameHandler.map.destroyBlock(bmb.position.x, bmb.position.y - i)
                     }
                     if (bombData[2] === 1 && gameHandler.map.inMapBound(bmb.position.x + i, bmb.position.y) &&
                       ["EMPTY", "WALL"].includes(gameHandler.map.grid[bmb.position.y][bmb.position.x + i])) {
-                      bombData[2] = 0 ;
+                      bombData[2] = 0;
                       gameHandler.map.destroyBlock(bmb.position.x + i, bmb.position.y)
                     }
                     if (bombData[3] === 1 && gameHandler.map.inMapBound(bmb.position.x - i, bmb.position.y) &&
@@ -102,13 +111,13 @@ class Socket {
                         (pl.position.x === bmb.position.x && pl.position.y === bmb.position.y - i)
                       ) {
                         pl.lives -= 1;
-                        console.log(this.clients , this.clients.keys());
+                        console.log(this.clients, this.clients.keys());
 
                         if (pl.lives === 0) {
                           console.log(pl.lives);
 
-                          this.SendToClient(pl.id, JSON.stringify({ signal: "YouLost" , data: pl}))
-                          gameHandler.removeplayer(pl.id) 
+                          this.SendToClient(pl.id, JSON.stringify({ signal: "YouLost", data: pl }))
+                          gameHandler.removeplayer(pl.id)
                         }
                       }
 
@@ -153,26 +162,9 @@ class Socket {
         }
       });
 
-      this.ws.on("close", () => {
-        console.log('Client disconnected');
-        this.clients.delete(ClientId);
-gameHandler.removeplayer(ClientId)
-        // const disconnectedPlayer = gameHandler.players.find(p => p.id === ClientId);
-        // if (disconnectedPlayer) {
-        //   gameHandler.removeplayer(disconnectedPlayer.id);
-        //   console.log(`Player ${disconnectedPlayer.name} disconnected`);
-        // }
-        // wss.clients.forEach(client => {
-        //   if (client.readyState === WebSocket.OPEN) {
-        //     client.send(JSON.stringify({
-        //       signal: "PlayerDisconnected",
-        //       playerId: ClientId,
-        //       playerName: disconnectedPlayer ? disconnectedPlayer.name : "Unknown"
-        //     }));
-        //   }
-        // })
-      });
-    });
+
+      
+    })
   }
 }
 
